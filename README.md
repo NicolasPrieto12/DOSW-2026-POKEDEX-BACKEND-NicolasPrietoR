@@ -1240,3 +1240,237 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | El usuario solo puede editar sus propios equipos. Los cambios deben reflejarse inmediatamente en el análisis competitivo del equipo. |
+
+---
+
+### RF-26 — Eliminar equipos Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-26 |
+| **Nombre** | Eliminar equipos Pokémon |
+| **Descripción** | El sistema permite al usuario eliminar un equipo Pokémon existente de su lista de equipos. |
+| **Cómo se ejecutará** | El usuario accede a "Mis Equipos", selecciona el equipo que desea eliminar, hace clic en "Eliminar" y confirma la acción. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El usuario debe tener al menos un equipo creado. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del equipo | Identificador del equipo a eliminar | Número entero | Debe corresponder a un equipo existente del usuario | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Confirmación | Indicación de que el equipo fue eliminado exitosamente | Texto | Mostrado tras confirmar la eliminación | Sí |
+| Lista actualizada | Lista de equipos del usuario sin el equipo eliminado | Lista de objetos | Se actualiza en tiempo real | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Mis Equipos" y selecciona un equipo | — |
+| 2 | Usuario | Hace clic en "Eliminar equipo" | — |
+| 3 | Sistema | Muestra un diálogo de confirmación | — |
+| 4 | Usuario | Confirma la eliminación | El usuario cancela → no se elimina el equipo |
+| 5 | Sistema | Elimina el equipo y actualiza la lista | Error de eliminación → muestra mensaje de error |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cancela el diálogo de confirmación | — |
+| 2 | Sistema | Cierra el diálogo y mantiene el equipo intacto | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La eliminación es permanente e irreversible. Se debe mostrar siempre un diálogo de confirmación antes de proceder. |
+
+---
+
+### RF-27 — Visualizar equipos Pokémon creados
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-27 |
+| **Nombre** | Visualizar equipos Pokémon creados |
+| **Descripción** | El sistema permite al usuario ver todos los equipos Pokémon que ha creado, con el nombre del equipo y los Pokémon que lo conforman. |
+| **Cómo se ejecutará** | El usuario accede a la sección "Mis Equipos" desde el menú y el sistema muestra la lista de todos sus equipos con información resumida de cada uno. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del usuario | Identificador del usuario cuya lista de equipos se consulta | Número entero | Obtenido automáticamente desde la sesión activa | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista de equipos | Equipos creados por el usuario con nombre e imágenes de los Pokémon | Lista de objetos | Ordenados por fecha de creación por defecto | Sí |
+| Mensaje lista vacía | Indicación de que el usuario no tiene equipos creados | Texto | Se muestra solo cuando no hay equipos | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Mis Equipos" desde el menú | — |
+| 2 | Sistema | Recupera todos los equipos del usuario | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Muestra la lista de equipos con nombre y Pokémon de cada uno | Sin equipos → muestra "No tienes equipos creados aún" |
+| 4 | Usuario | Selecciona un equipo para ver su detalle o análisis competitivo | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Desde la lista accede a crear un nuevo equipo | — |
+| 2 | Sistema | Redirige al flujo de creación de equipo (RF-24) | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Desde esta vista el usuario debe poder acceder a editar, eliminar o ver el análisis competitivo de cada equipo. |
+
+---
+
+### RF-28 — Visualizar análisis competitivo del equipo
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-28 |
+| **Nombre** | Visualizar análisis competitivo del equipo |
+| **Descripción** | El sistema muestra un análisis competitivo del equipo Pokémon seleccionado, incluyendo coberturas de tipo, debilidades, fortalezas, estadísticas promedio del equipo y posibles sinergias. |
+| **Cómo se ejecutará** | El usuario selecciona un equipo desde "Mis Equipos" y accede a la vista de análisis competitivo donde el sistema calcula y presenta la información. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El usuario debe tener al menos un equipo creado con al menos un Pokémon. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del equipo | Identificador del equipo a analizar | Número entero | Debe corresponder a un equipo existente del usuario | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Coberturas de tipo | Tipos cubiertos ofensiva y defensivamente por el equipo | Tabla / Gráfico | Basado en los tipos de los Pokémon del equipo | Sí |
+| Debilidades del equipo | Tipos a los que el equipo es vulnerable | Lista | Calculado según los tipos de todos los Pokémon | Sí |
+| Estadísticas promedio | Promedio de cada stat base del equipo | Gráfico de barras | Calculado con los stats de los 6 Pokémon | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona un equipo y accede a "Ver análisis competitivo" | — |
+| 2 | Sistema | Recupera los datos de todos los Pokémon del equipo | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Calcula coberturas, debilidades y estadísticas promedio | — |
+| 4 | Sistema | Presenta el análisis en pantalla con gráficos y tablas | — |
+| 5 | Usuario | Navega por las secciones del análisis | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | El equipo tiene menos de 6 Pokémon | — |
+| 2 | Sistema | Realiza el análisis con los Pokémon disponibles e indica que el equipo está incompleto | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El análisis competitivo debe actualizarse automáticamente cuando el equipo es editado. Es la funcionalidad diferenciadora del módulo de equipos. |
+
+---
+
+### RF-29 — Consultar estadísticas de uso de Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-29 |
+| **Nombre** | Consultar estadísticas de uso de Pokémon |
+| **Descripción** | El sistema permite a usuarios y administradores consultar estadísticas generales de uso de la Pokédex, como los Pokémon más consultados, más usados en equipos y tendencias generales. |
+| **Cómo se ejecutará** | El usuario accede a la sección "Estadísticas" desde el menú y el sistema presenta los datos de uso en gráficos y tablas. |
+| **Actor principal** | Usuario autenticado / Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir datos de uso registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Período de tiempo | Rango de fechas para filtrar las estadísticas | Selector de fecha | Por defecto muestra el último mes | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Pokémon más consultados | Ranking de Pokémon con más visitas en su detalle | Tabla / Gráfico | Top 10 por defecto | Sí |
+| Pokémon más usados en equipos | Ranking de Pokémon más agregados a equipos | Tabla / Gráfico | Top 10 por defecto | Sí |
+| Total de consultas | Número total de consultas realizadas en el período | Número | Calculado sobre el período seleccionado | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a la sección "Estadísticas" desde el menú | — |
+| 2 | Sistema | Recupera los datos de uso del período por defecto | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Presenta las estadísticas en gráficos y tablas | Sin datos → muestra "No hay estadísticas disponibles aún" |
+| 4 | Usuario | Puede cambiar el período de tiempo para filtrar los datos | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona un período de tiempo personalizado | — |
+| 2 | Sistema | Recalcula y actualiza las estadísticas para ese período | Sin datos en ese período → muestra aviso |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Las estadísticas deben ser de solo lectura para usuarios normales. Los administradores pueden tener acceso a estadísticas más detalladas. |
+
+---
+
+### RF-30 — Consultar Pokémon más utilizados en equipos
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-30 |
+| **Nombre** | Consultar Pokémon más utilizados en equipos |
+| **Descripción** | El sistema muestra un ranking de los Pokémon que aparecen con mayor frecuencia en los equipos creados por todos los usuarios de la plataforma. |
+| **Cómo se ejecutará** | Desde la sección de estadísticas el usuario accede al ranking de uso en equipos y el sistema presenta los datos ordenados por frecuencia de aparición. |
+| **Actor principal** | Usuario autenticado / Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir equipos creados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Período de tiempo | Rango de fechas para filtrar el ranking | Selector de fecha | Por defecto muestra el último mes | No |
+| Cantidad de resultados | Número de Pokémon a mostrar en el ranking | Número | Por defecto Top 10, máximo Top 50 | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Ranking de uso | Lista de Pokémon ordenados por frecuencia de aparición en equipos | Tabla / Gráfico | Incluye nombre, imagen, número de veces usado y porcentaje | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a la sección "Estadísticas" y selecciona "Uso en equipos" | — |
+| 2 | Sistema | Recupera y calcula la frecuencia de uso de cada Pokémon en equipos | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Presenta el ranking ordenado de mayor a menor uso | Sin datos → muestra "No hay datos de equipos disponibles aún" |
+| 4 | Usuario | Puede seleccionar un Pokémon del ranking para ver su detalle | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Filtra el ranking por un período de tiempo específico | — |
+| 2 | Sistema | Recalcula el ranking para ese período y actualiza la vista | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Este ranking refleja las preferencias competitivas de todos los usuarios. Es útil para identificar los Pokémon más populares en la comunidad de la plataforma. |
