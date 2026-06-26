@@ -316,3 +316,233 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | La búsqueda puede funcionar en tiempo real (mientras el usuario escribe). Se recomienda aplicar un debounce de al menos 300ms para no sobrecargar el sistema. |
+
+---
+
+### RF-06 — Búsqueda de Pokémon por número de Pokédex
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-06 |
+| **Nombre** | Búsqueda de Pokémon por número de Pokédex |
+| **Descripción** | El sistema permite al usuario buscar un Pokémon ingresando su número oficial de Pokédex en el campo de búsqueda. |
+| **Cómo se ejecutará** | El usuario ingresa el número en el campo de búsqueda, el sistema identifica que es un valor numérico y retorna el Pokémon correspondiente. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Número de Pokédex | Número oficial del Pokémon en la Pokédex nacional | Número entero | Debe ser un número positivo mayor a 0 | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Pokémon encontrado | Pokémon cuyo número coincide con el ingresado | Objeto Pokémon | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no existe un Pokémon con ese número | Texto | Se muestra solo cuando no hay coincidencia | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Ingresa un número en el campo de búsqueda | — |
+| 2 | Sistema | Detecta que el valor ingresado es numérico | — |
+| 3 | Sistema | Busca el Pokémon con ese número en la base de datos | Número no existe → muestra "No se encontró un Pokémon con ese número" |
+| 4 | Sistema | Muestra el Pokémon correspondiente | — |
+| 5 | Usuario | Selecciona el Pokémon para ver su detalle | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Ingresa un número fuera del rango válido (ej: 0 o negativo) | — |
+| 2 | Sistema | Valida el rango e informa que el número no es válido | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El campo de búsqueda puede detectar automáticamente si el valor ingresado es texto o número para aplicar el criterio correcto. |
+
+---
+
+### RF-07 — Consulta del detalle completo de un Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-07 |
+| **Nombre** | Consulta del detalle completo de un Pokémon |
+| **Descripción** | El sistema muestra la información completa de un Pokémon seleccionado, incluyendo estadísticas base, tipos, habilidades, movimientos, cadena evolutiva, descripción y datos generales. |
+| **Cómo se ejecutará** | El usuario selecciona un Pokémon desde el listado o desde los resultados de búsqueda y el sistema despliega su ficha de detalle completa. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador único del Pokémon seleccionado | Número entero | Debe corresponder a un Pokémon existente | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Ficha de detalle | Información completa del Pokémon (nombre, número, tipos, stats, habilidades, movimientos, evoluciones, descripción, altura, peso) | Objeto Pokémon | Todos los campos disponibles en la base de datos | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona un Pokémon desde el listado o resultados de búsqueda | — |
+| 2 | Sistema | Recupera la información completa del Pokémon desde la base de datos | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Despliega la ficha de detalle con toda la información disponible | Pokémon no encontrado → muestra mensaje de error |
+| 4 | Usuario | Navega por las secciones del detalle (stats, movimientos, evoluciones, etc.) | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Desde el detalle navega a un Pokémon de su cadena evolutiva | — |
+| 2 | Sistema | Carga el detalle del Pokémon seleccionado de la evolución | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La ficha de detalle es la pantalla más completa de la aplicación. Debe incluir acceso rápido a favoritos y a agregar al equipo. |
+
+---
+
+### RF-08 — Filtrar Pokémon por región
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-08 |
+| **Nombre** | Filtrar Pokémon por región |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon según la región de origen (Kanto, Johto, Hoenn, Sinnoh, Unova, Kalos, Alola, Galar, Paldea, etc.). |
+| **Cómo se ejecutará** | El usuario selecciona una o más regiones desde el panel de filtros y el sistema actualiza el listado mostrando únicamente los Pokémon de esa región. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con información de región. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Región seleccionada | Nombre de la región por la que se desea filtrar | Selector (dropdown/checkbox) | Debe ser una región válida y existente en el sistema | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon pertenecientes a la región seleccionada | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no hay Pokémon para esa región | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros y selecciona una región | — |
+| 2 | Sistema | Aplica el filtro de región al listado de Pokémon | — |
+| 3 | Sistema | Muestra únicamente los Pokémon de la región seleccionada | Sin resultados → muestra "No se encontraron Pokémon para esta región" |
+| 4 | Usuario | Puede combinar este filtro con otros criterios | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Deselecciona el filtro de región | — |
+| 2 | Sistema | Restablece el listado completo sin el filtro de región | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Los filtros deben poder combinarse entre sí. La región se determina según la generación y Pokédex regional de cada Pokémon. |
+
+---
+
+### RF-09 — Filtrar Pokémon por tipo primario
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-09 |
+| **Nombre** | Filtrar Pokémon por tipo primario |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon según su tipo primario (Fuego, Agua, Planta, Eléctrico, etc.). |
+| **Cómo se ejecutará** | El usuario selecciona un tipo primario desde el panel de filtros y el sistema actualiza el listado mostrando únicamente los Pokémon cuyo tipo principal coincide. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con información de tipo primario. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Tipo primario | Tipo principal del Pokémon por el que se desea filtrar | Selector (dropdown/checkbox) | Debe ser uno de los 18 tipos Pokémon válidos | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon cuyo tipo primario coincide con el seleccionado | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no hay Pokémon para ese tipo | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros y selecciona un tipo primario | — |
+| 2 | Sistema | Aplica el filtro al listado buscando Pokémon cuyo tipo 1 coincida | — |
+| 3 | Sistema | Muestra los Pokémon filtrados | Sin resultados → muestra "No se encontraron Pokémon de ese tipo" |
+| 4 | Usuario | Puede combinar con otros filtros activos | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Deselecciona el filtro de tipo primario | — |
+| 2 | Sistema | Restablece el listado sin ese filtro | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Existen 18 tipos Pokémon en total. El tipo primario es el primer tipo asignado al Pokémon. Este filtro puede combinarse con el filtro de tipo secundario (RF-10). |
+
+---
+
+### RF-10 — Filtrar Pokémon por tipo secundario
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-10 |
+| **Nombre** | Filtrar Pokémon por tipo secundario |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon según su tipo secundario, mostrando solo aquellos que tengan ese tipo como segundo tipo asignado. |
+| **Cómo se ejecutará** | El usuario selecciona un tipo secundario desde el panel de filtros y el sistema actualiza el listado mostrando únicamente los Pokémon que posean ese tipo como tipo 2. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con tipo secundario definido. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Tipo secundario | Segundo tipo del Pokémon por el que se desea filtrar | Selector (dropdown/checkbox) | Debe ser uno de los 18 tipos Pokémon válidos | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon cuyo tipo secundario coincide con el seleccionado | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no hay Pokémon con ese tipo secundario | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros y selecciona un tipo secundario | — |
+| 2 | Sistema | Aplica el filtro al listado buscando Pokémon cuyo tipo 2 coincida | — |
+| 3 | Sistema | Muestra los Pokémon filtrados | Sin resultados → muestra "No se encontraron Pokémon con ese tipo secundario" |
+| 4 | Usuario | Puede combinar con otros filtros activos | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Deselecciona el filtro de tipo secundario | — |
+| 2 | Sistema | Restablece el listado sin ese filtro | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | No todos los Pokémon tienen tipo secundario. Los Pokémon de un solo tipo no aparecerán en este filtro. Puede combinarse con RF-09 para filtrar por combinación de tipos. |
