@@ -1474,3 +1474,245 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | Este ranking refleja las preferencias competitivas de todos los usuarios. Es útil para identificar los Pokémon más populares en la comunidad de la plataforma. |
+
+---
+
+### RF-31 — Consultar Pokémon más consultados
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-31 |
+| **Nombre** | Consultar Pokémon más consultados |
+| **Descripción** | El sistema muestra un ranking de los Pokémon cuya ficha de detalle ha sido visitada con mayor frecuencia por los usuarios de la plataforma. |
+| **Cómo se ejecutará** | Desde la sección de estadísticas el usuario accede al ranking de consultas y el sistema presenta los Pokémon ordenados por número de visitas a su detalle. |
+| **Actor principal** | Usuario autenticado / Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir registros de consultas en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Período de tiempo | Rango de fechas para filtrar el ranking | Selector de fecha | Por defecto muestra el último mes | No |
+| Cantidad de resultados | Número de Pokémon a mostrar en el ranking | Número | Por defecto Top 10, máximo Top 50 | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Ranking de consultas | Lista de Pokémon ordenados por número de visitas a su detalle | Tabla / Gráfico | Incluye nombre, imagen, número de consultas y porcentaje | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Estadísticas" y selecciona "Pokémon más consultados" | — |
+| 2 | Sistema | Recupera el conteo de visitas por Pokémon del período seleccionado | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Presenta el ranking ordenado de mayor a menor consultas | Sin datos → muestra "No hay datos de consultas disponibles aún" |
+| 4 | Usuario | Puede seleccionar un Pokémon del ranking para ver su detalle | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Filtra el ranking por un período de tiempo específico | — |
+| 2 | Sistema | Recalcula el ranking para ese período y actualiza la vista | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Cada vez que un usuario accede al detalle de un Pokémon el sistema debe registrar esa consulta. El conteo debe ser global, no por usuario. |
+
+---
+
+### RF-32 — Consultar tasa de elección de Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-32 |
+| **Nombre** | Consultar tasa de elección de Pokémon |
+| **Descripción** | El sistema muestra el porcentaje de veces que cada Pokémon ha sido seleccionado para formar parte de un equipo respecto al total de Pokémon usados en equipos. |
+| **Cómo se ejecutará** | Desde la sección de estadísticas el usuario accede a la tasa de elección y el sistema calcula y presenta el porcentaje de uso de cada Pokémon. |
+| **Actor principal** | Usuario autenticado / Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir equipos creados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Período de tiempo | Rango de fechas para filtrar la tasa | Selector de fecha | Por defecto muestra el último mes | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Tasa de elección | Porcentaje de uso de cada Pokémon en equipos sobre el total | Tabla / Gráfico | Expresado en porcentaje con dos decimales | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Estadísticas" y selecciona "Tasa de elección" | — |
+| 2 | Sistema | Calcula la frecuencia relativa de cada Pokémon en equipos | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Presenta la tasa de elección en gráfico y tabla | Sin datos → muestra "No hay datos suficientes aún" |
+| 4 | Usuario | Puede filtrar por período o tipo de Pokémon | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Filtra la tasa por un período específico | — |
+| 2 | Sistema | Recalcula y actualiza los porcentajes para ese período | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La tasa de elección se calcula como: (veces que aparece el Pokémon en equipos / total de slots de equipo usados) × 100. |
+
+---
+
+### RF-33 — Administrar información de Pokémon (Administrador)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-33 |
+| **Nombre** | Administrar información de Pokémon |
+| **Descripción** | El sistema proporciona al administrador un panel de gestión desde el cual puede crear, actualizar y eliminar Pokémon del sistema. |
+| **Cómo se ejecutará** | El administrador accede al panel de administración desde el menú y puede ver el listado completo de Pokémon con opciones para crear, editar o eliminar cada uno. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Credenciales de administrador | Sesión activa con rol administrador | Token de sesión | Verificado automáticamente por el sistema | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Panel de administración | Vista con listado de Pokémon y opciones de gestión | Pantalla | Solo accesible para usuarios con rol administrador | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Accede al panel de administración desde el menú | — |
+| 2 | Sistema | Verifica que el usuario tenga rol de administrador | Sin permisos → redirige a pantalla de acceso denegado |
+| 3 | Sistema | Muestra el panel con el listado de Pokémon y opciones de gestión | Error de carga → muestra mensaje de error |
+| 4 | Administrador | Selecciona la acción deseada (crear, editar o eliminar) | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario normal | Intenta acceder al panel de administración | — |
+| 2 | Sistema | Detecta que el usuario no tiene rol de administrador | — |
+| 3 | Sistema | Muestra pantalla de acceso denegado | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El panel de administración es exclusivo para usuarios con rol administrador. Cualquier intento de acceso sin permisos debe ser bloqueado y registrado. |
+
+---
+
+### RF-34 — Crear nuevos Pokémon (Administrador)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-34 |
+| **Nombre** | Crear nuevos Pokémon |
+| **Descripción** | El sistema permite al administrador registrar un nuevo Pokémon en la Pokédex con toda su información asociada. |
+| **Cómo se ejecutará** | El administrador accede al panel de administración, selecciona "Crear Pokémon", completa el formulario con la información del nuevo Pokémon y guarda los cambios. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. El número de Pokédex del nuevo Pokémon no debe existir previamente. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Número de Pokédex | Número oficial del nuevo Pokémon | Número entero | Debe ser único, mayor a 0 | Sí |
+| Nombre | Nombre del Pokémon | Texto | Máximo 50 caracteres, debe ser único | Sí |
+| Tipo primario | Tipo principal del Pokémon | Selector | Debe ser uno de los 18 tipos válidos | Sí |
+| Tipo secundario | Segundo tipo del Pokémon | Selector | Debe ser uno de los 18 tipos válidos, diferente al primario | No |
+| Estadísticas base | HP, Ataque, Defensa, Atq. Esp., Def. Esp., Velocidad | Números enteros | Cada stat entre 1 y 255 | Sí |
+| Imagen | Imagen oficial del Pokémon | Imagen | Formato PNG/JPG, máximo 2MB | Sí |
+| Descripción | Texto descriptivo del Pokémon | Texto | Máximo 500 caracteres | No |
+| Generación | Generación a la que pertenece | Selector | Entre I y IX | Sí |
+| Región | Región de origen del Pokémon | Selector | Debe ser una región válida del sistema | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Pokémon creado | Nuevo Pokémon disponible en el sistema | Objeto Pokémon | Visible de inmediato en el listado general | Sí |
+| Mensaje de confirmación | Notificación de creación exitosa | Texto | Mostrado tras guardar | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Accede al panel y selecciona "Crear Pokémon" | — |
+| 2 | Administrador | Completa el formulario con los datos del nuevo Pokémon | — |
+| 3 | Administrador | Selecciona "Guardar" | — |
+| 4 | Sistema | Valida que el número y nombre no existan previamente | Duplicado → muestra error de validación |
+| 5 | Sistema | Registra el nuevo Pokémon en la base de datos | Error de guardado → muestra mensaje de error |
+| 6 | Sistema | Confirma la creación y muestra el nuevo Pokémon | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Cancela la creación | — |
+| 2 | Sistema | Descarta los datos y regresa al panel | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El nuevo Pokémon debe quedar disponible de inmediato para todos los usuarios. Se recomienda validar los datos antes de enviar el formulario. |
+
+---
+
+### RF-35 — Actualizar información de Pokémon (Administrador)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-35 |
+| **Nombre** | Actualizar información de Pokémon |
+| **Descripción** | El sistema permite al administrador modificar la información de un Pokémon existente en la Pokédex. |
+| **Cómo se ejecutará** | El administrador accede al panel de administración, busca el Pokémon a editar, selecciona "Editar", modifica los campos necesarios y guarda los cambios. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. El Pokémon a editar debe existir en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador del Pokémon a editar | Número entero | Debe corresponder a un Pokémon existente | Sí |
+| Campos a modificar | Cualquier campo de la ficha del Pokémon | Varios | Mismas reglas que en la creación | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Pokémon actualizado | Pokémon con la información modificada | Objeto Pokémon | Los cambios se reflejan de inmediato en el sistema | Sí |
+| Mensaje de confirmación | Notificación de actualización exitosa | Texto | Mostrado tras guardar los cambios | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Busca el Pokémon en el panel y selecciona "Editar" | — |
+| 2 | Sistema | Carga el formulario con la información actual del Pokémon | Error de carga → muestra mensaje de error |
+| 3 | Administrador | Modifica los campos necesarios y selecciona "Guardar" | — |
+| 4 | Sistema | Valida los datos modificados | Datos inválidos → muestra errores de validación |
+| 5 | Sistema | Actualiza la información en la base de datos | Error de guardado → muestra mensaje de error |
+| 6 | Sistema | Confirma la actualización | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Cancela la edición sin guardar | — |
+| 2 | Sistema | Descarta los cambios y mantiene la información original | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Los cambios se reflejan de inmediato para todos los usuarios. Se recomienda registrar un historial de cambios para auditoría. |
