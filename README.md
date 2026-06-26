@@ -778,3 +778,226 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | Cada Pokémon puede tener hasta 3 habilidades (2 normales y 1 oculta). El filtro debe indicar si la habilidad es normal u oculta para los resultados mostrados. |
+
+---
+
+### RF-16 — Filtrar Pokémon por mega evolución
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-16 |
+| **Nombre** | Filtrar Pokémon por mega evolución |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon según si tienen o no mega evolución disponible. |
+| **Cómo se ejecutará** | El usuario activa la opción "Con mega evolución" o "Sin mega evolución" desde el panel de filtros y el sistema actualiza el listado correspondiente. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con el campo de mega evolución definido. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Tiene mega evolución | Indica si se desea filtrar Pokémon con o sin mega evolución | Toggle / Radio button | Valores: Con mega evolución / Sin mega evolución / Todos | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon que cumplen el criterio de mega evolución seleccionado | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no hay Pokémon para ese criterio | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros y selecciona la opción de mega evolución | — |
+| 2 | Sistema | Aplica el filtro al listado según el criterio seleccionado | — |
+| 3 | Sistema | Muestra los Pokémon que cumplen el criterio | Sin resultados → muestra "No se encontraron Pokémon con ese criterio" |
+| 4 | Usuario | Puede combinar con otros filtros activos | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Deselecciona el filtro de mega evolución | — |
+| 2 | Sistema | Restablece el listado completo sin ese filtro | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Las mega evoluciones fueron introducidas en la Generación VI. Solo ciertos Pokémon tienen esta capacidad. El filtro debe mostrar también las formas mega en el detalle del Pokémon. |
+
+---
+
+### RF-17 — Ordenar Pokémon por nombre
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-17 |
+| **Nombre** | Ordenar Pokémon por nombre |
+| **Descripción** | El sistema permite al usuario ordenar el listado de Pokémon alfabéticamente por nombre, de forma ascendente o descendente. |
+| **Cómo se ejecutará** | El usuario selecciona la opción de ordenamiento por nombre desde el panel de ordenamiento y el sistema reordena el listado inmediatamente. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Criterio de orden | Dirección del ordenamiento por nombre | Selector | Valores: A-Z / Z-A | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista ordenada | Listado de Pokémon ordenado alfabéticamente según el criterio | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona "Ordenar por nombre" y elige A-Z o Z-A | — |
+| 2 | Sistema | Reordena el listado alfabéticamente según el criterio elegido | — |
+| 3 | Sistema | Muestra el listado reordenado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cambia el criterio de ordenamiento a otro campo | — |
+| 2 | Sistema | Aplica el nuevo criterio y actualiza el listado | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El ordenamiento puede combinarse con los filtros activos. Por defecto el listado se muestra ordenado por número de Pokédex. |
+
+---
+
+### RF-18 — Ordenar Pokémon por número de Pokédex
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-18 |
+| **Nombre** | Ordenar Pokémon por número de Pokédex |
+| **Descripción** | El sistema permite al usuario ordenar el listado de Pokémon por su número oficial de Pokédex, de forma ascendente o descendente. |
+| **Cómo se ejecutará** | El usuario selecciona la opción de ordenamiento por número desde el panel de ordenamiento y el sistema reordena el listado. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Criterio de orden | Dirección del ordenamiento por número | Selector | Valores: Ascendente (001→) / Descendente (→001) | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista ordenada | Listado de Pokémon ordenado por número de Pokédex | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona "Ordenar por número" y elige ascendente o descendente | — |
+| 2 | Sistema | Reordena el listado numéricamente según el criterio elegido | — |
+| 3 | Sistema | Muestra el listado reordenado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cambia el criterio de ordenamiento a otro campo | — |
+| 2 | Sistema | Aplica el nuevo criterio y actualiza el listado | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Este es el ordenamiento por defecto de la aplicación (ascendente). El número de Pokédex es el identificador más reconocido por los fans de la franquicia. |
+
+---
+
+### RF-19 — Ordenar Pokémon por generación
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-19 |
+| **Nombre** | Ordenar Pokémon por generación |
+| **Descripción** | El sistema permite al usuario ordenar el listado de Pokémon según la generación a la que pertenecen, de forma ascendente o descendente. |
+| **Cómo se ejecutará** | El usuario selecciona la opción de ordenamiento por generación desde el panel de ordenamiento y el sistema reordena el listado agrupando por generación. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con información de generación. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Criterio de orden | Dirección del ordenamiento por generación | Selector | Valores: Gen I→IX / Gen IX→I | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista ordenada | Listado de Pokémon ordenado por generación | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona "Ordenar por generación" y elige ascendente o descendente | — |
+| 2 | Sistema | Reordena el listado por generación según el criterio elegido | — |
+| 3 | Sistema | Muestra el listado reordenado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cambia el criterio de ordenamiento a otro campo | — |
+| 2 | Sistema | Aplica el nuevo criterio y actualiza el listado | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Dentro de cada generación los Pokémon se ordenan por número de Pokédex. Este ordenamiento puede combinarse con el filtro de generación (RF-11). |
+
+---
+
+### RF-20 — Ordenar Pokémon por estadísticas
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-20 |
+| **Nombre** | Ordenar Pokémon por estadísticas |
+| **Descripción** | El sistema permite al usuario ordenar el listado de Pokémon según una estadística base específica (HP, Ataque, Defensa, Ataque Especial, Defensa Especial, Velocidad o Total), de forma ascendente o descendente. |
+| **Cómo se ejecutará** | El usuario selecciona la estadística por la que desea ordenar y la dirección del orden desde el panel de ordenamiento, y el sistema reordena el listado. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con estadísticas base definidas. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Estadística seleccionada | Nombre del stat por el que se desea ordenar | Selector | Valores: HP, Ataque, Defensa, Atq. Esp., Def. Esp., Velocidad, Total | Sí |
+| Criterio de orden | Dirección del ordenamiento | Selector | Valores: Mayor a menor / Menor a mayor | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista ordenada | Listado de Pokémon ordenado por la estadística seleccionada | Lista de objetos | Incluye nombre, número, imagen, tipo(s) y valor del stat seleccionado | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona "Ordenar por estadística", elige el stat y la dirección | — |
+| 2 | Sistema | Reordena el listado según la estadística y dirección elegidas | — |
+| 3 | Sistema | Muestra el listado reordenado resaltando el valor del stat seleccionado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cambia la estadística de ordenamiento | — |
+| 2 | Sistema | Reordena el listado con el nuevo stat seleccionado | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El stat "Total" corresponde a la suma de todas las estadísticas base del Pokémon. Este ordenamiento es útil para encontrar los Pokémon más fuertes o más débiles en una categoría específica. |
