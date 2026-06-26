@@ -1716,3 +1716,243 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | Los cambios se reflejan de inmediato para todos los usuarios. Se recomienda registrar un historial de cambios para auditoría. |
+
+---
+
+### RF-36 — Eliminar Pokémon (Administrador)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-36 |
+| **Nombre** | Eliminar Pokémon |
+| **Descripción** | El sistema permite al administrador eliminar un Pokémon existente de la Pokédex de forma permanente. |
+| **Cómo se ejecutará** | El administrador accede al panel de administración, busca el Pokémon a eliminar, selecciona "Eliminar" y confirma la acción en el diálogo de confirmación. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. El Pokémon a eliminar debe existir en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador del Pokémon a eliminar | Número entero | Debe corresponder a un Pokémon existente | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Confirmación | Indicación de que el Pokémon fue eliminado exitosamente | Texto | Mostrado tras confirmar la eliminación | Sí |
+| Lista actualizada | Listado de Pokémon sin el Pokémon eliminado | Lista de objetos | Se actualiza de inmediato en el sistema | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Busca el Pokémon en el panel y selecciona "Eliminar" | — |
+| 2 | Sistema | Muestra diálogo de confirmación con advertencia de acción irreversible | — |
+| 3 | Administrador | Confirma la eliminación | El administrador cancela → no se elimina el Pokémon |
+| 4 | Sistema | Elimina el Pokémon de la base de datos | Error de eliminación → muestra mensaje de error |
+| 5 | Sistema | Confirma la eliminación y actualiza el listado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Cancela el diálogo de confirmación | — |
+| 2 | Sistema | Cierra el diálogo y mantiene el Pokémon intacto | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La eliminación es permanente. Si el Pokémon está en equipos o favoritos de usuarios, debe gestionarse la integridad referencial eliminándolo también de esas listas o notificando a los usuarios afectados. |
+
+---
+
+### RF-37 — Administrar usuarios (Administrador)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-37 |
+| **Nombre** | Administrar usuarios |
+| **Descripción** | El sistema proporciona al administrador un panel de gestión de usuarios desde el cual puede consultar, modificar y desactivar cuentas de usuario. |
+| **Cómo se ejecutará** | El administrador accede al panel de administración, selecciona la sección "Gestión de usuarios" y puede ver el listado completo con opciones de gestión sobre cada cuenta. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Credenciales de administrador | Sesión activa con rol administrador | Token de sesión | Verificado automáticamente por el sistema | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Panel de gestión de usuarios | Vista con listado de usuarios y opciones de gestión | Pantalla | Solo accesible para administradores | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Accede al panel de administración y selecciona "Gestión de usuarios" | — |
+| 2 | Sistema | Verifica que el usuario tenga rol de administrador | Sin permisos → redirige a pantalla de acceso denegado |
+| 3 | Sistema | Muestra el listado de usuarios registrados con sus datos y estado | Error de carga → muestra mensaje de error |
+| 4 | Administrador | Selecciona la acción deseada sobre un usuario | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario normal | Intenta acceder a la gestión de usuarios | — |
+| 2 | Sistema | Detecta que el usuario no tiene permisos | — |
+| 3 | Sistema | Muestra pantalla de acceso denegado | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El administrador no puede eliminar su propia cuenta desde este panel. Las acciones sobre usuarios deben quedar registradas en un log de auditoría. |
+
+---
+
+### RF-38 — Consultar usuarios registrados (Administrador)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-38 |
+| **Nombre** | Consultar usuarios registrados |
+| **Descripción** | El sistema permite al administrador ver el listado completo de usuarios registrados en la plataforma con su información básica y estado de cuenta. |
+| **Cómo se ejecutará** | Desde el panel de gestión de usuarios el administrador visualiza la tabla con todos los usuarios, pudiendo buscarlos y filtrarlos. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Término de búsqueda | Nombre o correo para filtrar usuarios | Texto | Búsqueda parcial, no distingue mayúsculas | No |
+| Estado del usuario | Filtro por estado de la cuenta | Selector | Valores: Todos / Activos / Bloqueados | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista de usuarios | Usuarios registrados con nombre, correo, fecha de registro y estado | Tabla | Paginada, ordenada por fecha de registro por defecto | Sí |
+| Total de usuarios | Número total de usuarios registrados | Número | Mostrado como resumen en el panel | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Accede a la sección "Gestión de usuarios" | — |
+| 2 | Sistema | Recupera y muestra el listado completo de usuarios | Error de conexión → muestra mensaje de error |
+| 3 | Administrador | Puede buscar o filtrar usuarios por nombre, correo o estado | — |
+| 4 | Sistema | Actualiza el listado según el criterio aplicado | Sin resultados → muestra "No se encontraron usuarios" |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Aplica filtro de usuarios bloqueados | — |
+| 2 | Sistema | Muestra únicamente los usuarios con estado bloqueado | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El listado debe mostrar claramente el estado de cada cuenta (activa o bloqueada). La información de correo es de solo lectura. |
+
+---
+
+### RF-39 — Modificar información de usuarios (Administrador)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-39 |
+| **Nombre** | Modificar información de usuarios |
+| **Descripción** | El sistema permite al administrador editar ciertos datos del perfil de un usuario registrado, como su nombre de entrenador o su rol en el sistema. |
+| **Cómo se ejecutará** | Desde el panel de gestión de usuarios el administrador selecciona un usuario, hace clic en "Editar", modifica los campos permitidos y guarda los cambios. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. El usuario a modificar debe estar registrado en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del usuario | Identificador del usuario a modificar | Número entero | Debe corresponder a un usuario existente | Sí |
+| Nombre de entrenador | Nuevo nombre del entrenador | Texto | Máximo 30 caracteres | No |
+| Rol | Nuevo rol asignado al usuario | Selector | Valores: Usuario normal / Administrador | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Usuario actualizado | Perfil del usuario con los cambios aplicados | Objeto usuario | Se refleja de inmediato en el sistema | Sí |
+| Mensaje de confirmación | Notificación de actualización exitosa | Texto | Mostrado tras guardar los cambios | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Selecciona un usuario del listado y hace clic en "Editar" | — |
+| 2 | Sistema | Carga el formulario con la información actual del usuario | Error de carga → muestra mensaje de error |
+| 3 | Administrador | Modifica los campos permitidos y selecciona "Guardar" | — |
+| 4 | Sistema | Valida los datos ingresados | Datos inválidos → muestra errores de validación |
+| 5 | Sistema | Actualiza la información del usuario | Error de guardado → muestra mensaje de error |
+| 6 | Sistema | Confirma la actualización | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Cancela la edición sin guardar | — |
+| 2 | Sistema | Descarta los cambios y mantiene la información original | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El correo Gmail no es editable por el administrador ya que es el identificador único del usuario. El cambio de rol debe aplicarse en la siguiente sesión del usuario afectado. |
+
+---
+
+### RF-40 — Desactivar o bloquear usuarios (Administrador)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-40 |
+| **Nombre** | Desactivar o bloquear usuarios |
+| **Descripción** | El sistema permite al administrador desactivar o bloquear la cuenta de un usuario, impidiendo que pueda iniciar sesión en la plataforma. |
+| **Cómo se ejecutará** | Desde el panel de gestión de usuarios el administrador selecciona un usuario activo, hace clic en "Bloquear" y confirma la acción. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. El usuario a bloquear debe estar activo en el sistema. El administrador no puede bloquearse a sí mismo. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del usuario | Identificador del usuario a bloquear | Número entero | Debe corresponder a un usuario activo distinto al administrador | Sí |
+| Motivo del bloqueo | Razón por la que se bloquea al usuario | Texto | Máximo 200 caracteres | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Confirmación | Indicación de que el usuario fue bloqueado exitosamente | Texto | Mostrado tras confirmar la acción | Sí |
+| Estado actualizado | Estado de la cuenta del usuario cambiado a bloqueado | Objeto usuario | Se refleja de inmediato en el listado | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Selecciona un usuario del listado y hace clic en "Bloquear" | — |
+| 2 | Sistema | Muestra diálogo de confirmación | — |
+| 3 | Administrador | Confirma el bloqueo opcionalmente con un motivo | El administrador cancela → no se bloquea el usuario |
+| 4 | Sistema | Cambia el estado del usuario a bloqueado | Error → muestra mensaje de error |
+| 5 | Sistema | Si el usuario tiene sesión activa, la cierra de inmediato | — |
+| 6 | Sistema | Confirma el bloqueo y actualiza el listado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Reactiva un usuario previamente bloqueado | — |
+| 2 | Sistema | Cambia el estado del usuario a activo | — |
+| 3 | Sistema | El usuario puede volver a iniciar sesión | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Un usuario bloqueado no puede iniciar sesión. Si intenta hacerlo, el sistema debe mostrar un mensaje indicando que su cuenta está desactivada. El bloqueo es reversible. |
