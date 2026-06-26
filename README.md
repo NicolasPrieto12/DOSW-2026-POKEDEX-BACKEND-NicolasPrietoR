@@ -546,3 +546,235 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | No todos los Pokémon tienen tipo secundario. Los Pokémon de un solo tipo no aparecerán en este filtro. Puede combinarse con RF-09 para filtrar por combinación de tipos. |
+
+---
+
+### RF-11 — Filtrar Pokémon por generación
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-11 |
+| **Nombre** | Filtrar Pokémon por generación |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon según la generación a la que pertenecen (Generación I al IX). |
+| **Cómo se ejecutará** | El usuario selecciona una generación desde el panel de filtros y el sistema actualiza el listado mostrando únicamente los Pokémon de esa generación. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con información de generación. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Generación seleccionada | Número de generación por la que se desea filtrar | Selector (dropdown/checkbox) | Debe ser una generación válida entre I y IX | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon pertenecientes a la generación seleccionada | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no hay Pokémon para esa generación | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros y selecciona una generación | — |
+| 2 | Sistema | Aplica el filtro de generación al listado | — |
+| 3 | Sistema | Muestra únicamente los Pokémon de esa generación | Sin resultados → muestra "No se encontraron Pokémon para esta generación" |
+| 4 | Usuario | Puede combinar este filtro con otros criterios | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Deselecciona el filtro de generación | — |
+| 2 | Sistema | Restablece el listado completo sin ese filtro | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Actualmente existen 9 generaciones Pokémon. Este filtro puede combinarse con el de región ya que cada generación corresponde a una región principal. |
+
+---
+
+### RF-12 — Filtrar Pokémon por evolución
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-12 |
+| **Nombre** | Filtrar Pokémon por evolución |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon según su etapa evolutiva (básico, primera evolución, segunda evolución, sin evolución). |
+| **Cómo se ejecutará** | El usuario selecciona una etapa evolutiva desde el panel de filtros y el sistema actualiza el listado con los Pokémon que correspondan a esa etapa. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con información de cadena evolutiva. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Etapa evolutiva | Etapa de evolución por la que se desea filtrar | Selector (dropdown/checkbox) | Valores: Básico, Primera evolución, Segunda evolución, Sin evolución | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon que corresponden a la etapa evolutiva seleccionada | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no hay Pokémon para esa etapa | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros y selecciona una etapa evolutiva | — |
+| 2 | Sistema | Aplica el filtro al listado según la etapa seleccionada | — |
+| 3 | Sistema | Muestra los Pokémon que corresponden a esa etapa | Sin resultados → muestra "No se encontraron Pokémon para esta etapa evolutiva" |
+| 4 | Usuario | Puede combinar este filtro con otros criterios | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Deselecciona el filtro de evolución | — |
+| 2 | Sistema | Restablece el listado completo sin ese filtro | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Los Pokémon legendarios y míticos generalmente no tienen evolución. Este filtro es útil para encontrar Pokémon en su forma final de evolución. |
+
+---
+
+### RF-13 — Filtrar Pokémon por estadísticas (stats)
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-13 |
+| **Nombre** | Filtrar Pokémon por estadísticas (stats) |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon estableciendo rangos mínimos y máximos para una o más estadísticas base (HP, Ataque, Defensa, Ataque Especial, Defensa Especial, Velocidad). |
+| **Cómo se ejecutará** | El usuario define rangos de valores para las estadísticas deseadas desde el panel de filtros y el sistema muestra los Pokémon que cumplan con esos rangos. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con estadísticas base definidas. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Estadística seleccionada | Nombre del stat a filtrar (HP, Ataque, Defensa, etc.) | Selector | Debe ser una estadística válida | Sí |
+| Valor mínimo | Valor mínimo del rango para la estadística | Número entero | Mínimo 0, no puede ser mayor al valor máximo | No |
+| Valor máximo | Valor máximo del rango para la estadística | Número entero | Máximo 255, no puede ser menor al valor mínimo | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon cuyas estadísticas se encuentran dentro del rango definido | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no hay Pokémon para ese rango | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros y selecciona una estadística | — |
+| 2 | Usuario | Define el rango mínimo y/o máximo para esa estadística | — |
+| 3 | Sistema | Valida que el rango sea coherente | Rango inválido → muestra mensaje de validación |
+| 4 | Sistema | Filtra y muestra los Pokémon que cumplen el rango | Sin resultados → muestra "No se encontraron Pokémon con esas estadísticas" |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Limpia el filtro de estadísticas | — |
+| 2 | Sistema | Restablece el listado completo sin ese filtro | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Se recomienda usar sliders para definir los rangos de estadísticas. El usuario puede filtrar por múltiples stats simultáneamente. |
+
+---
+
+### RF-14 — Filtrar Pokémon por ataques aprendidos
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-14 |
+| **Nombre** | Filtrar Pokémon por ataques aprendidos |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon según un ataque o movimiento específico que puedan aprender. |
+| **Cómo se ejecutará** | El usuario ingresa o selecciona un ataque desde el panel de filtros y el sistema muestra todos los Pokémon que pueden aprender dicho ataque. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con sus movimientos asociados. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Nombre del ataque | Nombre del movimiento por el que se desea filtrar | Texto / Selector | Debe corresponder a un ataque existente en el sistema | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon que pueden aprender el ataque seleccionado | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que ningún Pokémon aprende ese ataque | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros e ingresa o selecciona un ataque | — |
+| 2 | Sistema | Busca todos los Pokémon asociados a ese movimiento | Ataque no encontrado → muestra "El ataque ingresado no existe" |
+| 3 | Sistema | Muestra el listado de Pokémon que pueden aprender ese ataque | Sin resultados → muestra "Ningún Pokémon aprende ese ataque" |
+| 4 | Usuario | Puede combinar con otros filtros activos | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Limpia el filtro de ataque | — |
+| 2 | Sistema | Restablece el listado completo sin ese filtro | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Un Pokémon puede aprender ataques por nivel, MT/MO, tutor o huevo. El filtro debe considerar todas las formas de aprendizaje. |
+
+---
+
+### RF-15 — Filtrar Pokémon por habilidades
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-15 |
+| **Nombre** | Filtrar Pokémon por habilidades |
+| **Descripción** | El sistema permite al usuario filtrar el listado de Pokémon según una habilidad específica que posean, incluyendo habilidades ocultas. |
+| **Cómo se ejecutará** | El usuario ingresa o selecciona una habilidad desde el panel de filtros y el sistema muestra todos los Pokémon que la posean. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados con sus habilidades asociadas. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Nombre de la habilidad | Nombre de la habilidad por la que se desea filtrar | Texto / Selector | Debe corresponder a una habilidad existente en el sistema | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista filtrada | Pokémon que poseen la habilidad seleccionada | Lista de objetos | Incluye nombre, número, imagen, tipo(s) e indicador si es habilidad oculta | Sí |
+| Mensaje sin resultados | Indicación de que ningún Pokémon tiene esa habilidad | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al panel de filtros e ingresa o selecciona una habilidad | — |
+| 2 | Sistema | Busca todos los Pokémon que posean esa habilidad | Habilidad no encontrada → muestra "La habilidad ingresada no existe" |
+| 3 | Sistema | Muestra el listado de Pokémon con esa habilidad | Sin resultados → muestra "Ningún Pokémon posee esa habilidad" |
+| 4 | Usuario | Puede combinar con otros filtros activos | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Limpia el filtro de habilidad | — |
+| 2 | Sistema | Restablece el listado completo sin ese filtro | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Cada Pokémon puede tener hasta 3 habilidades (2 normales y 1 oculta). El filtro debe indicar si la habilidad es normal u oculta para los resultados mostrados. |
