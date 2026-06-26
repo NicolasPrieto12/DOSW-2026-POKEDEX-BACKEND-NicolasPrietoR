@@ -33,7 +33,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ## Enlace al prototipo (Figma)
 
-> _Próximamente_
+🔗 [Ver prototipo en Figma](https://www.figma.com/make/J8BH2PiYPdefewUuh0950r/NikoDex-web-app-design?t=g5Pq9m6PQJab6glj-1)
 
 ---
 
