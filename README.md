@@ -2352,3 +2352,12 @@ Sensaciones que transmite: curiosidad, exploración, coleccionismo, fantasía y 
 | ❌ | Colocar el logo sobre fondos que dificulten su lectura |
 | ❌ | Recortar elementos del logotipo |
 | ❌ | Modificar la ilustración de Cubone |
+
+
+---
+
+## Diagrama de Casos de Uso
+
+<p align="center">
+  <img src="Images/Diagrama de casos de uso.png" alt="Diagrama de Casos de Uso NikoDex" width="900"/>
+</p>
