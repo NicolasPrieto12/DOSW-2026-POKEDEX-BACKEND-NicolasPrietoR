@@ -1001,3 +1001,242 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | El stat "Total" corresponde a la suma de todas las estadísticas base del Pokémon. Este ordenamiento es útil para encontrar los Pokémon más fuertes o más débiles en una categoría específica. |
+
+---
+
+### RF-21 — Guardar Pokémon como favorito
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-21 |
+| **Nombre** | Guardar Pokémon como favorito |
+| **Descripción** | El sistema permite al usuario marcar un Pokémon como favorito para guardarlo en su lista personal de favoritos y acceder a él fácilmente. |
+| **Cómo se ejecutará** | El usuario hace clic en el ícono de favorito (corazón o estrella) desde el listado o desde el detalle del Pokémon y el sistema lo agrega a su lista de favoritos. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema. El Pokémon no debe estar ya en la lista de favoritos del usuario. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador del Pokémon a marcar como favorito | Número entero | Debe corresponder a un Pokémon existente | Sí |
+| ID del usuario | Identificador del usuario que realiza la acción | Número entero | Obtenido automáticamente desde la sesión activa | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Confirmación | Indicación de que el Pokémon fue agregado a favoritos | Texto / Ícono | El ícono de favorito cambia a estado activo | Sí |
+| Lista actualizada | Lista de favoritos del usuario con el nuevo Pokémon incluido | Lista de objetos | Se actualiza en tiempo real | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Hace clic en el ícono de favorito de un Pokémon | — |
+| 2 | Sistema | Verifica que el Pokémon no esté ya en favoritos del usuario | Ya está en favoritos → no hace nada o muestra aviso |
+| 3 | Sistema | Agrega el Pokémon a la lista de favoritos del usuario | Error de guardado → muestra mensaje de error |
+| 4 | Sistema | Actualiza el ícono a estado activo y confirma la acción | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Intenta guardar como favorito sin haber iniciado sesión | — |
+| 2 | Sistema | Redirige al usuario a la pantalla de inicio de sesión | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El ícono de favorito debe ser visible desde el listado y desde el detalle del Pokémon. El cambio de estado debe reflejarse en tiempo real sin recargar la página. |
+
+---
+
+### RF-22 — Eliminar Pokémon de favoritos
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-22 |
+| **Nombre** | Eliminar Pokémon de favoritos |
+| **Descripción** | El sistema permite al usuario quitar un Pokémon de su lista de favoritos. |
+| **Cómo se ejecutará** | El usuario hace clic en el ícono de favorito activo desde el listado, el detalle del Pokémon o desde su lista de favoritos, y el sistema lo elimina de dicha lista. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe estar en la lista de favoritos del usuario. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador del Pokémon a quitar de favoritos | Número entero | Debe estar en la lista de favoritos del usuario | Sí |
+| ID del usuario | Identificador del usuario que realiza la acción | Número entero | Obtenido automáticamente desde la sesión activa | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Confirmación | Indicación de que el Pokémon fue eliminado de favoritos | Texto / Ícono | El ícono de favorito cambia a estado inactivo | Sí |
+| Lista actualizada | Lista de favoritos del usuario sin el Pokémon eliminado | Lista de objetos | Se actualiza en tiempo real | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Hace clic en el ícono de favorito activo de un Pokémon | — |
+| 2 | Sistema | Verifica que el Pokémon esté en la lista de favoritos del usuario | — |
+| 3 | Sistema | Elimina el Pokémon de la lista de favoritos | Error de eliminación → muestra mensaje de error |
+| 4 | Sistema | Actualiza el ícono a estado inactivo y confirma la acción | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Elimina un favorito desde la sección "Mis Favoritos" | — |
+| 2 | Sistema | Elimina el Pokémon y actualiza la lista visible | Si la lista queda vacía → muestra mensaje "No tienes Pokémon favoritos aún" |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La eliminación debe ser inmediata y reflejarse en todos los puntos donde se muestre el estado de favorito del Pokémon. |
+
+---
+
+### RF-23 — Consultar lista de Pokémon favoritos
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-23 |
+| **Nombre** | Consultar lista de Pokémon favoritos |
+| **Descripción** | El sistema permite al usuario ver todos los Pokémon que ha marcado como favoritos en una sección dedicada. |
+| **Cómo se ejecutará** | El usuario accede a la sección "Mis Favoritos" desde el menú y el sistema muestra el listado de todos sus Pokémon favoritos. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del usuario | Identificador del usuario cuya lista se consulta | Número entero | Obtenido automáticamente desde la sesión activa | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista de favoritos | Pokémon marcados como favoritos por el usuario | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje lista vacía | Indicación de que el usuario no tiene favoritos guardados | Texto | Se muestra solo cuando la lista está vacía | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a la sección "Mis Favoritos" desde el menú | — |
+| 2 | Sistema | Recupera la lista de Pokémon favoritos del usuario | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Muestra el listado de favoritos | Lista vacía → muestra "No tienes Pokémon favoritos aún" |
+| 4 | Usuario | Puede seleccionar un Pokémon para ver su detalle o eliminarlo de favoritos | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Elimina un Pokémon desde la lista de favoritos | — |
+| 2 | Sistema | Actualiza la lista en tiempo real removiendo el Pokémon | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La sección de favoritos debe permitir acceder al detalle de cada Pokémon y también eliminarlo directamente desde ahí. |
+
+---
+
+### RF-24 — Crear equipos Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-24 |
+| **Nombre** | Crear equipos Pokémon |
+| **Descripción** | El sistema permite al usuario crear un equipo Pokémon seleccionando hasta 6 Pokémon, asignándole un nombre al equipo para su posterior consulta y análisis competitivo. |
+| **Cómo se ejecutará** | El usuario accede a la sección "Mis Equipos", selecciona "Crear nuevo equipo", le asigna un nombre, agrega hasta 6 Pokémon buscándolos o seleccionándolos del listado, y guarda el equipo. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Nombre del equipo | Nombre identificador del equipo | Texto | Máximo 30 caracteres, no puede estar vacío | Sí |
+| Pokémon seleccionados | Lista de Pokémon que conforman el equipo | Lista de IDs | Mínimo 1, máximo 6 Pokémon por equipo | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Equipo creado | Equipo guardado con nombre y Pokémon seleccionados | Objeto equipo | Se almacena vinculado al usuario | Sí |
+| Mensaje de confirmación | Notificación de que el equipo fue creado exitosamente | Texto | Mostrado tras guardar el equipo | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Mis Equipos" y selecciona "Crear nuevo equipo" | — |
+| 2 | Usuario | Ingresa un nombre para el equipo | Nombre vacío → muestra error de validación |
+| 3 | Usuario | Busca y agrega Pokémon al equipo (hasta 6) | Intento de agregar más de 6 → muestra aviso de límite |
+| 4 | Usuario | Selecciona "Guardar equipo" | — |
+| 5 | Sistema | Valida los datos y guarda el equipo | Error de guardado → muestra mensaje de error |
+| 6 | Sistema | Redirige a la vista del equipo creado con confirmación | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cancela la creación del equipo | — |
+| 2 | Sistema | Descarta los datos y regresa a la lista de equipos | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Un usuario puede tener múltiples equipos. El equipo debe permitir Pokémon repetidos según preferencia del usuario. Cada equipo puede tener entre 1 y 6 Pokémon. |
+
+---
+
+### RF-25 — Editar equipos Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-25 |
+| **Nombre** | Editar equipos Pokémon |
+| **Descripción** | El sistema permite al usuario modificar un equipo Pokémon existente, cambiando su nombre o los Pokémon que lo conforman. |
+| **Cómo se ejecutará** | El usuario accede a la sección "Mis Equipos", selecciona un equipo existente, hace clic en "Editar" y realiza los cambios deseados antes de guardar. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El usuario debe tener al menos un equipo creado. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del equipo | Identificador del equipo a editar | Número entero | Debe corresponder a un equipo existente del usuario | Sí |
+| Nombre del equipo | Nuevo nombre del equipo | Texto | Máximo 30 caracteres, no puede estar vacío | No |
+| Pokémon seleccionados | Nueva lista de Pokémon del equipo | Lista de IDs | Mínimo 1, máximo 6 Pokémon | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Equipo actualizado | Equipo con los cambios aplicados | Objeto equipo | Se refleja de inmediato en la interfaz | Sí |
+| Mensaje de confirmación | Notificación de que los cambios fueron guardados | Texto | Mostrado tras guardar los cambios | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Mis Equipos" y selecciona un equipo | — |
+| 2 | Usuario | Hace clic en "Editar" | — |
+| 3 | Usuario | Modifica el nombre y/o los Pokémon del equipo | — |
+| 4 | Usuario | Selecciona "Guardar cambios" | — |
+| 5 | Sistema | Valida los datos y actualiza el equipo | Error de guardado → muestra mensaje de error |
+| 6 | Sistema | Confirma los cambios y muestra el equipo actualizado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cancela la edición sin guardar | — |
+| 2 | Sistema | Descarta los cambios y mantiene el equipo original | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El usuario solo puede editar sus propios equipos. Los cambios deben reflejarse inmediatamente en el análisis competitivo del equipo. |
