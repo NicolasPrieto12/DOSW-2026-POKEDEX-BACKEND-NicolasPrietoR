@@ -1956,3 +1956,233 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | Un usuario bloqueado no puede iniciar sesión. Si intenta hacerlo, el sistema debe mostrar un mensaje indicando que su cuenta está desactivada. El bloqueo es reversible. |
+
+---
+
+### RF-41 — Comparar dos Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-41 |
+| **Nombre** | Comparar dos Pokémon |
+| **Descripción** | El sistema permite al usuario seleccionar dos Pokémon y visualizar una comparación lado a lado de sus estadísticas base, tipos, habilidades y otras características. |
+| **Cómo se ejecutará** | El usuario accede a la sección "Comparar Pokémon", selecciona dos Pokémon y el sistema genera una vista comparativa con sus datos enfrentados. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir al menos dos Pokémon registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Pokémon 1 | Primer Pokémon a comparar | Selector / Buscador | Debe corresponder a un Pokémon existente | Sí |
+| Pokémon 2 | Segundo Pokémon a comparar | Selector / Buscador | Debe corresponder a un Pokémon existente y ser diferente al primero | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Vista comparativa | Comparación lado a lado de estadísticas, tipos, habilidades y datos generales de ambos Pokémon | Tabla / Gráfico | Se resalta el valor superior en cada categoría | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a la sección "Comparar Pokémon" | — |
+| 2 | Usuario | Selecciona el primer Pokémon | — |
+| 3 | Usuario | Selecciona el segundo Pokémon | Selecciona el mismo Pokémon dos veces → muestra aviso |
+| 4 | Sistema | Recupera los datos de ambos Pokémon | Error de conexión → muestra mensaje de error |
+| 5 | Sistema | Genera y presenta la vista comparativa | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cambia uno de los Pokémon seleccionados | — |
+| 2 | Sistema | Actualiza la vista comparativa con el nuevo Pokémon | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La comparación debe resaltar visualmente qué Pokémon supera al otro en cada estadística. Se puede acceder a esta función también desde el detalle de un Pokémon. |
+
+---
+
+### RF-42 — Mostrar evoluciones de un Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-42 |
+| **Nombre** | Mostrar evoluciones de un Pokémon |
+| **Descripción** | El sistema muestra las evoluciones directas de un Pokémon, indicando las condiciones necesarias para evolucionar (nivel, piedra, intercambio, etc.). |
+| **Cómo se ejecutará** | Desde la ficha de detalle de un Pokémon el sistema muestra automáticamente sus evoluciones directas con las condiciones requeridas. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador del Pokémon cuyas evoluciones se consultan | Número entero | Debe corresponder a un Pokémon existente | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista de evoluciones | Pokémon a los que puede evolucionar con sus condiciones | Lista de objetos | Incluye nombre, imagen y condición de evolución | Sí |
+| Mensaje sin evoluciones | Indicación de que el Pokémon no evoluciona | Texto | Se muestra solo si el Pokémon no tiene evoluciones | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al detalle de un Pokémon | — |
+| 2 | Sistema | Recupera las evoluciones directas del Pokémon | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Muestra las evoluciones con imagen y condición de evolución | Sin evoluciones → muestra "Este Pokémon no evoluciona" |
+| 4 | Usuario | Puede hacer clic en una evolución para ver su detalle | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Sistema | El Pokémon tiene evoluciones múltiples (ramificadas) | — |
+| 2 | Sistema | Muestra todas las posibles evoluciones con sus condiciones respectivas | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Algunos Pokémon tienen evoluciones ramificadas (ej: Eevee). Las condiciones de evolución pueden ser variadas: nivel, amistad, objeto, intercambio, hora del día, entre otras. |
+
+---
+
+### RF-43 — Mostrar cadena evolutiva completa
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-43 |
+| **Nombre** | Mostrar cadena evolutiva completa |
+| **Descripción** | El sistema muestra la cadena evolutiva completa del Pokémon consultado, desde su forma base hasta su evolución final, con todas las etapas y condiciones intermedias. |
+| **Cómo se ejecutará** | Desde la ficha de detalle el sistema presenta visualmente la cadena evolutiva completa del Pokémon en forma de diagrama o línea de evolución. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema con su cadena evolutiva registrada. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador del Pokémon cuya cadena evolutiva se consulta | Número entero | Debe corresponder a un Pokémon existente | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Cadena evolutiva | Diagrama con todas las etapas evolutivas, imágenes y condiciones entre cada etapa | Diagrama / Lista | Desde la forma base hasta la forma final | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al detalle de un Pokémon | — |
+| 2 | Sistema | Recupera la cadena evolutiva completa del Pokémon | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Presenta el diagrama con todas las etapas y condiciones | Pokémon sin cadena → muestra "Este Pokémon no tiene cadena evolutiva" |
+| 4 | Usuario | Puede hacer clic en cualquier Pokémon de la cadena para ver su detalle | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Sistema | La cadena tiene ramificaciones (ej: Eevee) | — |
+| 2 | Sistema | Muestra el diagrama con todas las ramas posibles | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La cadena evolutiva debe ser navegable. Al hacer clic en cualquier Pokémon de la cadena el sistema debe redirigir a su ficha de detalle. |
+
+---
+
+### RF-44 — Mostrar Pokémon relacionados por tipo
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-44 |
+| **Nombre** | Mostrar Pokémon relacionados por tipo |
+| **Descripción** | El sistema muestra en la ficha de detalle de un Pokémon una sección con otros Pokémon que comparten el mismo tipo primario o secundario. |
+| **Cómo se ejecutará** | Al consultar el detalle de un Pokémon el sistema carga automáticamente una sección de "Pokémon relacionados" mostrando Pokémon del mismo tipo. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema. Deben existir otros Pokémon del mismo tipo. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador del Pokémon base para buscar relacionados | Número entero | Debe corresponder a un Pokémon existente | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Pokémon relacionados | Lista de Pokémon que comparten tipo con el Pokémon consultado | Lista de objetos | Máximo 10 Pokémon, excluye el Pokémon actual | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al detalle de un Pokémon | — |
+| 2 | Sistema | Recupera Pokémon que comparten el tipo primario o secundario | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Muestra la sección "Pokémon relacionados" con hasta 10 resultados | Sin relacionados → oculta la sección |
+| 4 | Usuario | Puede hacer clic en un Pokémon relacionado para ver su detalle | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Hace clic en "Ver más" de la sección de relacionados | — |
+| 2 | Sistema | Redirige al listado filtrado por ese tipo (RF-09 o RF-10) | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Los Pokémon relacionados se seleccionan aleatoriamente o por popularidad entre los que comparten tipo. La sección debe ser visualmente discreta para no opacar la información principal. |
+
+---
+
+### RF-45 — Consultar historial de equipos creados
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-45 |
+| **Nombre** | Consultar historial de equipos creados |
+| **Descripción** | El sistema permite al usuario consultar el historial de todos los equipos que ha creado, incluyendo los equipos eliminados, con su fecha de creación y última modificación. |
+| **Cómo se ejecutará** | El usuario accede a la sección "Historial de equipos" desde "Mis Equipos" y el sistema presenta el registro completo de equipos creados. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Debe existir al menos un registro de equipo creado por el usuario. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del usuario | Identificador del usuario cuyo historial se consulta | Número entero | Obtenido automáticamente desde la sesión activa | Sí |
+| Período de tiempo | Rango de fechas para filtrar el historial | Selector de fecha | Por defecto muestra todos los registros | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Historial de equipos | Lista de todos los equipos creados con nombre, Pokémon, fecha de creación y estado (activo/eliminado) | Tabla | Ordenado por fecha de creación descendente | Sí |
+| Mensaje sin historial | Indicación de que no hay registros de equipos | Texto | Se muestra solo cuando no hay historial | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Mis Equipos" y selecciona "Ver historial" | — |
+| 2 | Sistema | Recupera el historial completo de equipos del usuario | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Presenta el historial con nombre, Pokémon, fechas y estado | Sin historial → muestra "No tienes historial de equipos aún" |
+| 4 | Usuario | Puede filtrar el historial por período de tiempo | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona un equipo eliminado del historial | — |
+| 2 | Sistema | Muestra los detalles del equipo en modo de solo lectura | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | Los equipos eliminados aparecen en el historial con estado "Eliminado" pero no pueden ser editados. El historial es de solo lectura y sirve como referencia para el usuario. |
