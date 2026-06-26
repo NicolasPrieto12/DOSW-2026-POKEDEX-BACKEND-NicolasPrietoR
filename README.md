@@ -29,7 +29,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ## Enlace al tablero de Jira
 
-> _Próximamente_
+🔗 [Ver tablero en Jira](https://teamdosw.atlassian.net/jira/software/projects/NIKO/boards/2)
 
 ## Enlace al prototipo (Figma)
 
