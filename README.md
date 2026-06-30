@@ -31,10 +31,6 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 🔗 [Ver tablero en Jira](https://teamdosw.atlassian.net/jira/software/projects/NIKO/boards/2)
 
-## Enlace al prototipo (Figma)
-
-🔗 [Ver prototipo en Figma](https://www.figma.com/make/J8BH2PiYPdefewUuh0950r/NikoDex-web-app-design?t=g5Pq9m6PQJab6glj-1)
-
 ---
 
 ## Documento de Análisis de Requerimientos
