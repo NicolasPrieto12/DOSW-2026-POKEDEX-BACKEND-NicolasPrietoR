@@ -1,4 +1,4 @@
-# DOSW-2026-POKEDEX-NicolasPrietoR
+# DOSW-2026-POKEDEX-BACKEND-NicolasPrietoR
 
 **Proyecto:** Pokédex  
 **Curso:** Desarrollo y Operaciones de Software (DOSW) · 2026 Intersemestral  
