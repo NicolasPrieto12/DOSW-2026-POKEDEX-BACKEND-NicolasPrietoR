@@ -75,7 +75,346 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
-### RF-01 — Registro de usuario mediante cuenta Gmail
+### RF-01 — Registro de usuario
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-01 |
+| **Nombre** | Registro de usuario |
+| **Descripción** | El sistema deberá permitir que los usuarios se registren utilizando una cuenta de Google. |
+| **Cómo se ejecutará** | El usuario accede a la pantalla de registro, selecciona "Registrarse con Google", se autentica mediante OAuth 2.0 y el sistema crea su perfil automáticamente con los datos de la cuenta. |
+| **Actor principal** | Usuario no registrado |
+| **Precondiciones** | El usuario debe tener una cuenta de Google activa y no estar registrado previamente en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Cuenta Google | Correo electrónico de Google del usuario | Email (OAuth) | Debe ser una cuenta Google válida y activa | Sí |
+| Token OAuth | Token de autenticación generado por Google | Token | Generado automáticamente por Google OAuth 2.0 | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Perfil de usuario | Cuenta creada con nombre, foto y correo obtenidos de Google | Objeto usuario | Se almacena con rol "usuario normal" | Sí |
+| Mensaje de confirmación | Notificación de registro exitoso | Texto | Mostrado en pantalla tras el registro | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a la pantalla de inicio y selecciona "Registrarse con Google" | — |
+| 2 | Sistema | Redirige al flujo de autenticación de Google OAuth 2.0 | — |
+| 3 | Usuario | Selecciona su cuenta Google y otorga permisos | El usuario cancela → vuelve a la pantalla de inicio |
+| 4 | Sistema | Recibe el token y valida que el correo no esté registrado | Correo ya existe → redirige al inicio de sesión |
+| 5 | Sistema | Crea el perfil del usuario con los datos de Google | Error de conexión → muestra mensaje de error |
+| 6 | Sistema | Redirige al usuario a la pantalla principal | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Intenta registrarse con un correo ya existente | — |
+| 2 | Sistema | Detecta el correo duplicado y ofrece la opción de iniciar sesión | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El registro es exclusivamente mediante Google. Los datos del perfil se obtienen automáticamente desde la cuenta de Google. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | Solo se permite el registro mediante cuenta de Google. |
+| 2 | No se pueden registrar dos usuarios con el mismo correo electrónico. |
+| 3 | El rol asignado por defecto es "usuario normal". |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| OAuth | Open Authorization |
+| RF | Requerimiento Funcional |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-02 — Inicio de sesión
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-02 |
+| **Nombre** | Inicio de sesión |
+| **Descripción** | El sistema deberá permitir que los usuarios inicien sesión mediante autenticación con Google. |
+| **Cómo se ejecutará** | El usuario selecciona "Iniciar sesión con Google", se autentica con OAuth 2.0 y el sistema valida que el correo esté registrado para conceder acceso. |
+| **Actor principal** | Usuario registrado |
+| **Precondiciones** | El usuario debe estar registrado en el sistema y tener una cuenta de Google activa. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Cuenta Google | Correo electrónico de Google del usuario | Email (OAuth) | Debe coincidir con una cuenta registrada | Sí |
+| Token OAuth | Token de autenticación generado por Google | Token | Generado automáticamente por Google OAuth 2.0 | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Sesión activa | Token de sesión del usuario en la aplicación | Token de sesión | Se almacena localmente para mantener la sesión | Sí |
+| Redirección | Pantalla principal de la Pokédex | Pantalla | Se muestra tras autenticación exitosa | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona "Iniciar sesión con Google" | — |
+| 2 | Sistema | Redirige al flujo de autenticación de Google OAuth 2.0 | — |
+| 3 | Usuario | Selecciona su cuenta y otorga permisos | El usuario cancela → vuelve a la pantalla de inicio |
+| 4 | Sistema | Valida que el correo esté registrado | Correo no registrado → muestra opción de registrarse |
+| 5 | Sistema | Crea la sesión y redirige a la pantalla principal | Error de conexión → muestra mensaje de error |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Intenta iniciar sesión con cuenta bloqueada | — |
+| 2 | Sistema | Detecta el bloqueo y muestra mensaje de cuenta desactivada | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El inicio de sesión es exclusivamente mediante Google. No existe recuperación de contraseña ya que la autenticación es delegada a Google. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | Solo se permite el inicio de sesión mediante cuenta de Google. |
+| 2 | Un usuario bloqueado no puede iniciar sesión. |
+| 3 | La sesión debe expirar tras un período de inactividad definido. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| OAuth | Open Authorization |
+| RF | Requerimiento Funcional |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-03 — Gestión de perfil
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-03 |
+| **Nombre** | Gestión de perfil |
+| **Descripción** | El sistema deberá permitir consultar y actualizar la información del perfil del usuario. |
+| **Cómo se ejecutará** | El usuario accede a "Mi Perfil", visualiza su información actual y puede modificar los campos editables. Al guardar, el sistema actualiza la información en la base de datos. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Nombre de entrenador | Nombre personalizado dentro de la Pokédex | Texto | Máximo 30 caracteres, no puede estar vacío | Sí |
+| Foto de perfil | Imagen de perfil del usuario | Imagen | Formato JPG/PNG, máximo 2MB | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Perfil actualizado | Información del perfil con los cambios guardados | Objeto usuario | Se refleja de inmediato en la interfaz | Sí |
+| Mensaje de confirmación | Notificación de actualización exitosa | Texto | Mostrado tras guardar cambios | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Mi Perfil" desde el menú | — |
+| 2 | Sistema | Muestra la información actual del perfil | Error de carga → muestra mensaje de error |
+| 3 | Usuario | Modifica los campos deseados y selecciona "Guardar" | — |
+| 4 | Sistema | Valida los datos ingresados | Datos inválidos → muestra errores de validación |
+| 5 | Sistema | Actualiza la información y confirma el cambio | Error de guardado → muestra mensaje de error |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Cancela la edición sin guardar | — |
+| 2 | Sistema | Descarta los cambios y mantiene la información original | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El correo Google no es editable ya que es el identificador único del usuario. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | El correo electrónico no puede ser modificado por el usuario. |
+| 2 | El nombre de entrenador debe ser único en el sistema. |
+| 3 | La foto de perfil es opcional; por defecto se usa la foto de Google. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| JPG/PNG | Formatos de imagen soportados |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-04 — Consulta de Pokédex
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-04 |
+| **Nombre** | Consulta de Pokédex |
+| **Descripción** | El sistema deberá permitir visualizar el listado completo de Pokémon y consultar la información detallada de cada uno. |
+| **Cómo se ejecutará** | El usuario accede a la sección principal de la Pokédex y el sistema presenta el listado paginado. Al seleccionar un Pokémon, se despliega su ficha completa con estadísticas, tipos, habilidades, movimientos y evoluciones. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Página actual | Número de página solicitada | Número | Mínimo 1, por defecto 1 | No |
+| ID del Pokémon | Identificador del Pokémon a consultar en detalle | Número entero | Debe corresponder a un Pokémon existente | Condicional |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista de Pokémon | Pokémon con nombre, número, imagen y tipo(s) | Lista de objetos | Ordenados por número de Pokédex por defecto | Sí |
+| Ficha de detalle | Información completa del Pokémon seleccionado | Objeto Pokémon | Incluye stats, habilidades, movimientos y evoluciones | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a la sección principal de la Pokédex | — |
+| 2 | Sistema | Recupera y muestra el listado paginado de Pokémon | Error de conexión → muestra mensaje de error |
+| 3 | Usuario | Selecciona un Pokémon para ver su detalle | — |
+| 4 | Sistema | Carga y despliega la ficha completa del Pokémon | Pokémon no encontrado → muestra mensaje de error |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Navega entre páginas del listado | — |
+| 2 | Sistema | Carga la página solicitada con los Pokémon correspondientes | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El listado es el punto de entrada principal. Desde la ficha de detalle el usuario puede agregar el Pokémon a favoritos o a un equipo. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | Cada consulta al detalle de un Pokémon debe registrarse para las estadísticas de uso. |
+| 2 | El listado se ordena por número de Pokédex de forma ascendente por defecto. |
+| 3 | Solo usuarios autenticados pueden acceder al listado y detalle. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| Stats | Estadísticas base del Pokémon |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-05 — Búsqueda de Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-05 |
+| **Nombre** | Búsqueda de Pokémon |
+| **Descripción** | El sistema deberá permitir buscar Pokémon por nombre o número de Pokédex. |
+| **Cómo se ejecutará** | El usuario ingresa un texto o número en el campo de búsqueda y el sistema retorna los Pokémon que coincidan con el criterio ingresado. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir Pokémon registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Término de búsqueda | Nombre completo o parcial, o número del Pokémon | Texto / Número | Mínimo 1 carácter; si es numérico se busca por número de Pokédex | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista de resultados | Pokémon que coinciden con el término buscado | Lista de objetos | Incluye nombre, número, imagen y tipo(s) | Sí |
+| Mensaje sin resultados | Indicación de que no se encontraron coincidencias | Texto | Se muestra solo cuando no hay resultados | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Ingresa un término en el campo de búsqueda | — |
+| 2 | Sistema | Detecta si el valor es texto o número y aplica el criterio correspondiente | — |
+| 3 | Sistema | Retorna los Pokémon que coincidan | Sin resultados → muestra "No se encontraron Pokémon" |
+| 4 | Usuario | Selecciona un Pokémon para ver su detalle | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Borra el campo de búsqueda | — |
+| 2 | Sistema | Restablece el listado completo de Pokémon | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La búsqueda puede funcionar en tiempo real. Se recomienda un debounce de 300ms. La búsqueda por número debe aceptar solo valores positivos mayores a 0. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | La búsqueda por nombre no distingue mayúsculas de minúsculas. |
+| 2 | La búsqueda por número solo acepta enteros positivos mayores a 0. |
+| 3 | El sistema detecta automáticamente si el término ingresado es texto o número. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| ms | Milisegundos |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
 
 | Campo | Detalle |
 |---|---|
@@ -222,7 +561,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
-### RF-04 — Visualización del listado de Pokémon
+## Diagrama de Casos de Uso
 
 | Campo | Detalle |
 |---|---|
@@ -499,7 +838,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
-### RF-10 — Filtrar Pokémon por tipo secundario
+## Diagrama de Casos de Uso
 
 | Campo | Detalle |
 |---|---|
@@ -731,7 +1070,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
-### RF-15 — Filtrar Pokémon por habilidades
+## Diagrama de Casos de Uso
 
 | Campo | Detalle |
 |---|---|
@@ -955,7 +1294,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
-### RF-20 — Ordenar Pokémon por estadísticas
+## Diagrama de Casos de Uso
 
 | Campo | Detalle |
 |---|---|
@@ -1189,7 +1528,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
-### RF-25 — Editar equipos Pokémon
+## Diagrama de Casos de Uso
 
 | Campo | Detalle |
 |---|---|
@@ -1427,7 +1766,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
-### RF-30 — Consultar Pokémon más utilizados en equipos
+## Diagrama de Casos de Uso
 
 | Campo | Detalle |
 |---|---|
@@ -1666,7 +2005,7 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
-### RF-35 — Actualizar información de Pokémon (Administrador)
+## Diagrama de Casos de Uso
 
 | Campo | Detalle |
 |---|---|
@@ -1902,288 +2241,6 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Campo | Detalle |
 |---|---|
 | **Notas y comentarios** | El correo Gmail no es editable por el administrador ya que es el identificador único del usuario. El cambio de rol debe aplicarse en la siguiente sesión del usuario afectado. |
-
----
-
-### RF-40 — Desactivar o bloquear usuarios (Administrador)
-
-| Campo | Detalle |
-|---|---|
-| **Código** | RF-40 |
-| **Nombre** | Desactivar o bloquear usuarios |
-| **Descripción** | El sistema permite al administrador desactivar o bloquear la cuenta de un usuario, impidiendo que pueda iniciar sesión en la plataforma. |
-| **Cómo se ejecutará** | Desde el panel de gestión de usuarios el administrador selecciona un usuario activo, hace clic en "Bloquear" y confirma la acción. |
-| **Actor principal** | Administrador |
-| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. El usuario a bloquear debe estar activo en el sistema. El administrador no puede bloquearse a sí mismo. |
-
-**Datos de Entrada**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| ID del usuario | Identificador del usuario a bloquear | Número entero | Debe corresponder a un usuario activo distinto al administrador | Sí |
-| Motivo del bloqueo | Razón por la que se bloquea al usuario | Texto | Máximo 200 caracteres | No |
-
-**Datos de Salida**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| Confirmación | Indicación de que el usuario fue bloqueado exitosamente | Texto | Mostrado tras confirmar la acción | Sí |
-| Estado actualizado | Estado de la cuenta del usuario cambiado a bloqueado | Objeto usuario | Se refleja de inmediato en el listado | Sí |
-
-**Flujo Básico**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Administrador | Selecciona un usuario del listado y hace clic en "Bloquear" | — |
-| 2 | Sistema | Muestra diálogo de confirmación | — |
-| 3 | Administrador | Confirma el bloqueo opcionalmente con un motivo | El administrador cancela → no se bloquea el usuario |
-| 4 | Sistema | Cambia el estado del usuario a bloqueado | Error → muestra mensaje de error |
-| 5 | Sistema | Si el usuario tiene sesión activa, la cierra de inmediato | — |
-| 6 | Sistema | Confirma el bloqueo y actualiza el listado | — |
-
-**Flujo Alterno**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Administrador | Reactiva un usuario previamente bloqueado | — |
-| 2 | Sistema | Cambia el estado del usuario a activo | — |
-| 3 | Sistema | El usuario puede volver a iniciar sesión | — |
-
-| Campo | Detalle |
-|---|---|
-| **Notas y comentarios** | Un usuario bloqueado no puede iniciar sesión. Si intenta hacerlo, el sistema debe mostrar un mensaje indicando que su cuenta está desactivada. El bloqueo es reversible. |
-
----
-
-### RF-41 — Comparar dos Pokémon
-
-| Campo | Detalle |
-|---|---|
-| **Código** | RF-41 |
-| **Nombre** | Comparar dos Pokémon |
-| **Descripción** | El sistema permite al usuario seleccionar dos Pokémon y visualizar una comparación lado a lado de sus estadísticas base, tipos, habilidades y otras características. |
-| **Cómo se ejecutará** | El usuario accede a la sección "Comparar Pokémon", selecciona dos Pokémon y el sistema genera una vista comparativa con sus datos enfrentados. |
-| **Actor principal** | Usuario autenticado |
-| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir al menos dos Pokémon registrados en el sistema. |
-
-**Datos de Entrada**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| Pokémon 1 | Primer Pokémon a comparar | Selector / Buscador | Debe corresponder a un Pokémon existente | Sí |
-| Pokémon 2 | Segundo Pokémon a comparar | Selector / Buscador | Debe corresponder a un Pokémon existente y ser diferente al primero | Sí |
-
-**Datos de Salida**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| Vista comparativa | Comparación lado a lado de estadísticas, tipos, habilidades y datos generales de ambos Pokémon | Tabla / Gráfico | Se resalta el valor superior en cada categoría | Sí |
-
-**Flujo Básico**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Usuario | Accede a la sección "Comparar Pokémon" | — |
-| 2 | Usuario | Selecciona el primer Pokémon | — |
-| 3 | Usuario | Selecciona el segundo Pokémon | Selecciona el mismo Pokémon dos veces → muestra aviso |
-| 4 | Sistema | Recupera los datos de ambos Pokémon | Error de conexión → muestra mensaje de error |
-| 5 | Sistema | Genera y presenta la vista comparativa | — |
-
-**Flujo Alterno**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Usuario | Cambia uno de los Pokémon seleccionados | — |
-| 2 | Sistema | Actualiza la vista comparativa con el nuevo Pokémon | — |
-
-| Campo | Detalle |
-|---|---|
-| **Notas y comentarios** | La comparación debe resaltar visualmente qué Pokémon supera al otro en cada estadística. Se puede acceder a esta función también desde el detalle de un Pokémon. |
-
----
-
-### RF-42 — Mostrar evoluciones de un Pokémon
-
-| Campo | Detalle |
-|---|---|
-| **Código** | RF-42 |
-| **Nombre** | Mostrar evoluciones de un Pokémon |
-| **Descripción** | El sistema muestra las evoluciones directas de un Pokémon, indicando las condiciones necesarias para evolucionar (nivel, piedra, intercambio, etc.). |
-| **Cómo se ejecutará** | Desde la ficha de detalle de un Pokémon el sistema muestra automáticamente sus evoluciones directas con las condiciones requeridas. |
-| **Actor principal** | Usuario autenticado |
-| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema. |
-
-**Datos de Entrada**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| ID del Pokémon | Identificador del Pokémon cuyas evoluciones se consultan | Número entero | Debe corresponder a un Pokémon existente | Sí |
-
-**Datos de Salida**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| Lista de evoluciones | Pokémon a los que puede evolucionar con sus condiciones | Lista de objetos | Incluye nombre, imagen y condición de evolución | Sí |
-| Mensaje sin evoluciones | Indicación de que el Pokémon no evoluciona | Texto | Se muestra solo si el Pokémon no tiene evoluciones | Condicional |
-
-**Flujo Básico**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Usuario | Accede al detalle de un Pokémon | — |
-| 2 | Sistema | Recupera las evoluciones directas del Pokémon | Error de conexión → muestra mensaje de error |
-| 3 | Sistema | Muestra las evoluciones con imagen y condición de evolución | Sin evoluciones → muestra "Este Pokémon no evoluciona" |
-| 4 | Usuario | Puede hacer clic en una evolución para ver su detalle | — |
-
-**Flujo Alterno**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Sistema | El Pokémon tiene evoluciones múltiples (ramificadas) | — |
-| 2 | Sistema | Muestra todas las posibles evoluciones con sus condiciones respectivas | — |
-
-| Campo | Detalle |
-|---|---|
-| **Notas y comentarios** | Algunos Pokémon tienen evoluciones ramificadas (ej: Eevee). Las condiciones de evolución pueden ser variadas: nivel, amistad, objeto, intercambio, hora del día, entre otras. |
-
----
-
-### RF-43 — Mostrar cadena evolutiva completa
-
-| Campo | Detalle |
-|---|---|
-| **Código** | RF-43 |
-| **Nombre** | Mostrar cadena evolutiva completa |
-| **Descripción** | El sistema muestra la cadena evolutiva completa del Pokémon consultado, desde su forma base hasta su evolución final, con todas las etapas y condiciones intermedias. |
-| **Cómo se ejecutará** | Desde la ficha de detalle el sistema presenta visualmente la cadena evolutiva completa del Pokémon en forma de diagrama o línea de evolución. |
-| **Actor principal** | Usuario autenticado |
-| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema con su cadena evolutiva registrada. |
-
-**Datos de Entrada**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| ID del Pokémon | Identificador del Pokémon cuya cadena evolutiva se consulta | Número entero | Debe corresponder a un Pokémon existente | Sí |
-
-**Datos de Salida**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| Cadena evolutiva | Diagrama con todas las etapas evolutivas, imágenes y condiciones entre cada etapa | Diagrama / Lista | Desde la forma base hasta la forma final | Sí |
-
-**Flujo Básico**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Usuario | Accede al detalle de un Pokémon | — |
-| 2 | Sistema | Recupera la cadena evolutiva completa del Pokémon | Error de conexión → muestra mensaje de error |
-| 3 | Sistema | Presenta el diagrama con todas las etapas y condiciones | Pokémon sin cadena → muestra "Este Pokémon no tiene cadena evolutiva" |
-| 4 | Usuario | Puede hacer clic en cualquier Pokémon de la cadena para ver su detalle | — |
-
-**Flujo Alterno**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Sistema | La cadena tiene ramificaciones (ej: Eevee) | — |
-| 2 | Sistema | Muestra el diagrama con todas las ramas posibles | — |
-
-| Campo | Detalle |
-|---|---|
-| **Notas y comentarios** | La cadena evolutiva debe ser navegable. Al hacer clic en cualquier Pokémon de la cadena el sistema debe redirigir a su ficha de detalle. |
-
----
-
-### RF-44 — Mostrar Pokémon relacionados por tipo
-
-| Campo | Detalle |
-|---|---|
-| **Código** | RF-44 |
-| **Nombre** | Mostrar Pokémon relacionados por tipo |
-| **Descripción** | El sistema muestra en la ficha de detalle de un Pokémon una sección con otros Pokémon que comparten el mismo tipo primario o secundario. |
-| **Cómo se ejecutará** | Al consultar el detalle de un Pokémon el sistema carga automáticamente una sección de "Pokémon relacionados" mostrando Pokémon del mismo tipo. |
-| **Actor principal** | Usuario autenticado |
-| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema. Deben existir otros Pokémon del mismo tipo. |
-
-**Datos de Entrada**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| ID del Pokémon | Identificador del Pokémon base para buscar relacionados | Número entero | Debe corresponder a un Pokémon existente | Sí |
-
-**Datos de Salida**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| Pokémon relacionados | Lista de Pokémon que comparten tipo con el Pokémon consultado | Lista de objetos | Máximo 10 Pokémon, excluye el Pokémon actual | Sí |
-
-**Flujo Básico**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Usuario | Accede al detalle de un Pokémon | — |
-| 2 | Sistema | Recupera Pokémon que comparten el tipo primario o secundario | Error de conexión → muestra mensaje de error |
-| 3 | Sistema | Muestra la sección "Pokémon relacionados" con hasta 10 resultados | Sin relacionados → oculta la sección |
-| 4 | Usuario | Puede hacer clic en un Pokémon relacionado para ver su detalle | — |
-
-**Flujo Alterno**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Usuario | Hace clic en "Ver más" de la sección de relacionados | — |
-| 2 | Sistema | Redirige al listado filtrado por ese tipo (RF-09 o RF-10) | — |
-
-| Campo | Detalle |
-|---|---|
-| **Notas y comentarios** | Los Pokémon relacionados se seleccionan aleatoriamente o por popularidad entre los que comparten tipo. La sección debe ser visualmente discreta para no opacar la información principal. |
-
----
-
-### RF-45 — Consultar historial de equipos creados
-
-| Campo | Detalle |
-|---|---|
-| **Código** | RF-45 |
-| **Nombre** | Consultar historial de equipos creados |
-| **Descripción** | El sistema permite al usuario consultar el historial de todos los equipos que ha creado, incluyendo los equipos eliminados, con su fecha de creación y última modificación. |
-| **Cómo se ejecutará** | El usuario accede a la sección "Historial de equipos" desde "Mis Equipos" y el sistema presenta el registro completo de equipos creados. |
-| **Actor principal** | Usuario autenticado |
-| **Precondiciones** | El usuario debe haber iniciado sesión. Debe existir al menos un registro de equipo creado por el usuario. |
-
-**Datos de Entrada**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| ID del usuario | Identificador del usuario cuyo historial se consulta | Número entero | Obtenido automáticamente desde la sesión activa | Sí |
-| Período de tiempo | Rango de fechas para filtrar el historial | Selector de fecha | Por defecto muestra todos los registros | No |
-
-**Datos de Salida**
-
-| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
-|---|---|---|---|---|
-| Historial de equipos | Lista de todos los equipos creados con nombre, Pokémon, fecha de creación y estado (activo/eliminado) | Tabla | Ordenado por fecha de creación descendente | Sí |
-| Mensaje sin historial | Indicación de que no hay registros de equipos | Texto | Se muestra solo cuando no hay historial | Condicional |
-
-**Flujo Básico**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Usuario | Accede a "Mis Equipos" y selecciona "Ver historial" | — |
-| 2 | Sistema | Recupera el historial completo de equipos del usuario | Error de conexión → muestra mensaje de error |
-| 3 | Sistema | Presenta el historial con nombre, Pokémon, fechas y estado | Sin historial → muestra "No tienes historial de equipos aún" |
-| 4 | Usuario | Puede filtrar el historial por período de tiempo | — |
-
-**Flujo Alterno**
-
-| Paso | Actor | Descripción | Excepciones |
-|---|---|---|---|
-| 1 | Usuario | Selecciona un equipo eliminado del historial | — |
-| 2 | Sistema | Muestra los detalles del equipo en modo de solo lectura | — |
-
-| Campo | Detalle |
-|---|---|
-| **Notas y comentarios** | Los equipos eliminados aparecen en el historial con estado "Eliminado" pero no pueden ser editados. El historial es de solo lectura y sirve como referencia para el usuario. |
-
-
 
 ---
 
