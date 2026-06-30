@@ -764,3 +764,355 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 | Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
 |---|---|---|---|
 | Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-11 — Administración de Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-11 |
+| **Nombre** | Administración de Pokémon |
+| **Descripción** | El sistema deberá permitir al administrador crear, consultar, modificar y eliminar la información de los Pokémon. |
+| **Cómo se ejecutará** | El administrador accede al panel de administración y puede ver el listado completo de Pokémon con opciones para crear nuevos, editar la información existente o eliminar registros. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Número de Pokédex | Número oficial del Pokémon | Número entero | Debe ser único y mayor a 0 | Sí |
+| Nombre | Nombre del Pokémon | Texto | Máximo 50 caracteres, debe ser único | Sí |
+| Tipo primario | Tipo principal del Pokémon | Selector | Debe ser uno de los 18 tipos válidos | Sí |
+| Tipo secundario | Segundo tipo del Pokémon | Selector | Opcional, diferente al tipo primario | No |
+| Estadísticas base | HP, Ataque, Defensa, Atq. Esp., Def. Esp., Velocidad | Números enteros | Cada stat entre 1 y 255 | Sí |
+| Imagen | Imagen del Pokémon | Imagen | Formato PNG/JPG, máximo 2MB | Sí |
+| Descripción | Texto descriptivo del Pokémon | Texto | Máximo 500 caracteres | No |
+| Generación | Generación a la que pertenece | Selector | Entre I y IX | Sí |
+| Región | Región de origen | Selector | Debe ser una región válida del sistema | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Pokémon gestionado | Resultado de la operación CRUD realizada | Objeto Pokémon | Cambios visibles de inmediato en el sistema | Sí |
+| Mensaje de confirmación | Notificación del resultado de la acción | Texto | Mostrado tras cada operación | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Accede al panel de administración | Sin permisos → redirige a pantalla de acceso denegado |
+| 2 | Administrador | Selecciona la acción a realizar (crear/editar/eliminar) | — |
+| 3 | Administrador | Completa el formulario o confirma la acción | Datos inválidos → muestra errores de validación |
+| 4 | Sistema | Valida y ejecuta la operación | Error → muestra mensaje de error |
+| 5 | Sistema | Confirma la operación y actualiza el listado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario normal | Intenta acceder al panel de administración | — |
+| 2 | Sistema | Detecta que no tiene permisos y muestra pantalla de acceso denegado | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La eliminación de un Pokémon es permanente. Si el Pokémon está en equipos o favoritos de usuarios, debe gestionarse la integridad referencial. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | Solo los administradores pueden crear, modificar o eliminar Pokémon. |
+| 2 | No pueden existir dos Pokémon con el mismo número de Pokédex o nombre. |
+| 3 | La eliminación de un Pokémon requiere confirmación previa. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| CRUD | Create, Read, Update, Delete |
+| Stats | Estadísticas base del Pokémon |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-12 — Administración de usuarios
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-12 |
+| **Nombre** | Administración de usuarios |
+| **Descripción** | El sistema deberá permitir al administrador consultar, modificar, bloquear y eliminar usuarios registrados. |
+| **Cómo se ejecutará** | El administrador accede al panel de gestión de usuarios y puede ver el listado completo con opciones para editar información, cambiar roles, bloquear o eliminar cuentas. |
+| **Actor principal** | Administrador |
+| **Precondiciones** | El usuario debe haber iniciado sesión con rol de administrador. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del usuario | Identificador del usuario a gestionar | Número entero | Debe corresponder a un usuario existente | Sí |
+| Nombre de entrenador | Nuevo nombre del entrenador | Texto | Máximo 30 caracteres | No |
+| Rol | Nuevo rol asignado al usuario | Selector | Valores: Usuario normal / Administrador | No |
+| Motivo de bloqueo | Razón por la que se bloquea al usuario | Texto | Máximo 200 caracteres | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Lista de usuarios | Usuarios registrados con nombre, correo, estado y rol | Tabla | Paginada, ordenada por fecha de registro | Sí |
+| Confirmación | Notificación del resultado de la acción | Texto | Mostrado tras cada operación | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Accede al panel de gestión de usuarios | Sin permisos → redirige a pantalla de acceso denegado |
+| 2 | Sistema | Muestra el listado completo de usuarios | Error de carga → muestra mensaje de error |
+| 3 | Administrador | Selecciona un usuario y elige la acción a realizar | — |
+| 4 | Sistema | Valida y ejecuta la acción | Error → muestra mensaje de error |
+| 5 | Sistema | Confirma la acción y actualiza el listado | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Administrador | Reactiva un usuario previamente bloqueado | — |
+| 2 | Sistema | Cambia el estado del usuario a activo | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El administrador no puede bloquearse ni eliminarse a sí mismo. Las acciones sobre usuarios quedan registradas en un log de auditoría. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | El administrador no puede modificar su propio rol ni bloquearse. |
+| 2 | Un usuario bloqueado no puede iniciar sesión en el sistema. |
+| 3 | El correo electrónico de un usuario no puede ser modificado por el administrador. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| ID | Identificador único |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-13 — Comparación de Pokémon
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-13 |
+| **Nombre** | Comparación de Pokémon |
+| **Descripción** | El sistema deberá permitir comparar dos Pokémon mostrando sus estadísticas, tipos, habilidades y características principales. |
+| **Cómo se ejecutará** | El usuario accede a la sección "Comparar Pokémon", selecciona dos Pokémon y el sistema genera una vista comparativa lado a lado resaltando las diferencias. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Deben existir al menos dos Pokémon registrados en el sistema. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Pokémon 1 | Primer Pokémon a comparar | Selector / Buscador | Debe corresponder a un Pokémon existente | Sí |
+| Pokémon 2 | Segundo Pokémon a comparar | Selector / Buscador | Debe ser diferente al primero y existir en el sistema | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Vista comparativa | Comparación lado a lado de estadísticas, tipos, habilidades y características | Tabla / Gráfico | Se resalta el valor superior en cada categoría | Sí |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Comparar Pokémon" y selecciona los dos Pokémon | — |
+| 2 | Sistema | Recupera los datos de ambos Pokémon | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Genera y presenta la vista comparativa | — |
+| 4 | Usuario | Puede cambiar uno o ambos Pokémon para una nueva comparación | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona el mismo Pokémon dos veces | — |
+| 2 | Sistema | Muestra aviso indicando que deben ser Pokémon diferentes | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La comparación debe resaltar visualmente el Pokémon superior en cada estadística. Se puede acceder desde el detalle de un Pokémon. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | Los dos Pokémon a comparar deben ser diferentes. |
+| 2 | La comparación es de solo lectura, no modifica ningún dato. |
+| 3 | El valor superior en cada estadística debe resaltarse visualmente. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| Stats | Estadísticas base del Pokémon |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-14 — Evoluciones
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-14 |
+| **Nombre** | Evoluciones |
+| **Descripción** | El sistema deberá permitir visualizar la cadena evolutiva y las evoluciones disponibles de un Pokémon. |
+| **Cómo se ejecutará** | Desde la ficha de detalle de un Pokémon, el sistema muestra automáticamente su cadena evolutiva completa con las condiciones necesarias para cada evolución. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. El Pokémon debe existir en el sistema con su cadena evolutiva registrada. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del Pokémon | Identificador del Pokémon cuya cadena evolutiva se consulta | Número entero | Debe corresponder a un Pokémon existente | Sí |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Cadena evolutiva | Diagrama con todas las etapas evolutivas, imágenes y condiciones | Diagrama / Lista | Desde la forma base hasta la forma final | Sí |
+| Mensaje sin evoluciones | Indicación de que el Pokémon no tiene evoluciones | Texto | Se muestra solo si no tiene cadena evolutiva | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede al detalle de un Pokémon | — |
+| 2 | Sistema | Recupera la cadena evolutiva completa del Pokémon | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Presenta el diagrama con todas las etapas y condiciones | Sin cadena → muestra "Este Pokémon no tiene evoluciones" |
+| 4 | Usuario | Hace clic en un Pokémon de la cadena para ver su detalle | — |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Sistema | El Pokémon tiene evoluciones ramificadas (ej: Eevee) | — |
+| 2 | Sistema | Muestra todas las ramas posibles con sus condiciones | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | La cadena evolutiva debe ser navegable. Las condiciones de evolución incluyen: nivel, amistad, objeto, intercambio, hora del día, entre otras. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | La cadena evolutiva se muestra siempre desde la forma base. |
+| 2 | Cada eslabón de la cadena debe ser navegable al detalle del Pokémon. |
+| 3 | Los Pokémon sin evolución muestran un mensaje indicándolo claramente. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| ID | Identificador único |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
+
+---
+
+### RF-15 — Historial y recomendaciones
+
+| Campo | Detalle |
+|---|---|
+| **Código** | RF-15 |
+| **Nombre** | Historial y recomendaciones |
+| **Descripción** | El sistema deberá permitir consultar el historial de equipos creados y mostrar Pokémon relacionados según sus tipos y características. |
+| **Cómo se ejecutará** | El usuario accede a "Historial de equipos" desde "Mis Equipos" para ver todos los equipos creados incluyendo los eliminados. Desde el detalle de un Pokémon, el sistema muestra automáticamente Pokémon relacionados por tipo. |
+| **Actor principal** | Usuario autenticado |
+| **Precondiciones** | El usuario debe haber iniciado sesión. Debe existir al menos un equipo creado o un Pokémon consultado. |
+
+**Datos de Entrada**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| ID del usuario | Identificador del usuario cuyo historial se consulta | Número entero | Obtenido automáticamente desde la sesión activa | Sí |
+| ID del Pokémon | Identificador del Pokémon base para buscar relacionados | Número entero | Debe corresponder a un Pokémon existente | Condicional |
+| Período de tiempo | Rango de fechas para filtrar el historial | Selector de fecha | Por defecto muestra todos los registros | No |
+
+**Datos de Salida**
+
+| Nombre | Descripción | Tipo de campo | Reglas / Aplicación | Obligatorio |
+|---|---|---|---|---|
+| Historial de equipos | Lista de equipos creados con nombre, Pokémon, fecha y estado | Tabla | Ordenado por fecha de creación descendente | Sí |
+| Pokémon relacionados | Pokémon que comparten tipo con el Pokémon consultado | Lista de objetos | Máximo 10 Pokémon, excluye el Pokémon actual | Condicional |
+
+**Flujo Básico**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Accede a "Mis Equipos" y selecciona "Ver historial" | — |
+| 2 | Sistema | Recupera el historial completo de equipos del usuario | Error de conexión → muestra mensaje de error |
+| 3 | Sistema | Presenta el historial con nombre, Pokémon, fechas y estado | Sin historial → muestra "No tienes historial de equipos aún" |
+| 4 | Usuario | Accede al detalle de un Pokémon para ver relacionados | — |
+| 5 | Sistema | Muestra la sección de Pokémon relacionados por tipo | Sin relacionados → oculta la sección |
+
+**Flujo Alterno**
+
+| Paso | Actor | Descripción | Excepciones |
+|---|---|---|---|
+| 1 | Usuario | Selecciona un equipo eliminado del historial | — |
+| 2 | Sistema | Muestra los detalles del equipo en modo de solo lectura | — |
+
+| Campo | Detalle |
+|---|---|
+| **Notas y comentarios** | El historial es de solo lectura. Los equipos eliminados aparecen con estado "Eliminado" pero no pueden editarse. Los Pokémon relacionados se muestran automáticamente en la ficha de detalle. |
+
+**Reglas de Negocio**
+
+| No. | Descripción |
+|---|---|
+| 1 | El historial incluye tanto equipos activos como eliminados. |
+| 2 | Los equipos eliminados son de solo lectura en el historial. |
+| 3 | Los Pokémon relacionados se muestran por similitud de tipo primario o secundario, con un máximo de 10. |
+
+**Abreviaturas**
+
+| Abreviatura | Significado |
+|---|---|
+| RF | Requerimiento Funcional |
+| ID | Identificador único |
+
+**Historial de Revisión**
+
+| Elaborado por | Aprobado por | Fecha | Descripción y Justificación de Cambios |
+|---|---|---|---|
+| Nicolas David Prieto Ramos | — | 25/06/2026 | Versión inicial del documento. |
