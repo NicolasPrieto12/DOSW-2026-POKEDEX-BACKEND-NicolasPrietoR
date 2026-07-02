@@ -33,6 +33,32 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
+## Diagramas de Arquitectura
+
+### Diagrama de Componentes Específico — Flujo GET /api/v1/pokemon/{id}
+
+<p align="center">
+  <img src="Images/Diagrama de componentes especifico.png" alt="Diagrama de Componentes Específico NikoDex" width="900"/>
+</p>
+
+---
+
+### Diagrama de Clases — Capa Core
+
+<p align="center">
+  <img src="Images/Diagrama de clases capa core.png" alt="Diagrama de Clases Capa Core NikoDex" width="900"/>
+</p>
+
+---
+
+### Diagrama Entidad-Relación — PostgreSQL + MongoDB
+
+<p align="center">
+  <img src="Images/Diagrama entidad relacion.png" alt="Diagrama Entidad Relación NikoDex" width="900"/>
+</p>
+
+---
+
 ## Documento de Análisis de Requerimientos
 
 | Campo | Detalle |
