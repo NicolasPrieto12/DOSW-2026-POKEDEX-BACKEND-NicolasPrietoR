@@ -45,5 +45,5 @@ springdoc:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:mySecretKeyForDevelopmentOnly1234567890}
+    secret: ${JWT_SECRET:bXlTZWNyZXRLZXlGb3JEZXZlbG9wbWVudE9ubHkxMjM0NTY3ODkwMTIzNDU2Nzg=}
     expiration-ms: 86400000
