@@ -11,6 +11,7 @@ public class User {
 
     Long id;
     String email;
+    String password;
     String trainerName;
     String profilePicture;
     String role;

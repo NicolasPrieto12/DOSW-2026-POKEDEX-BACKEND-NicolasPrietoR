@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userService.findByEmail(email);
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
-                "",
+                user.getPassword() != null ? user.getPassword() : "",
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
         );
     }
