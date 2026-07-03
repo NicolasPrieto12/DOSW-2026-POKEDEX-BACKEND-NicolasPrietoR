@@ -40,6 +40,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public User findOrCreateByEmail(String email, String name) {
+        return userPort.findByEmail(email).orElseGet(() ->
+                userPort.save(User.builder()
+                        .email(email)
+                        .trainerName(name)
+                        .role("USER")
+                        .active(true)
+                        .build()));
+    }
+
+    @Override
+    @Transactional
     public User update(Long id, User user) {
         log.debug("Actualizando usuario con id: {}", id);
         findById(id);
