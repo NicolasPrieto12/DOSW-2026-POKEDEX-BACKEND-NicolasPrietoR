@@ -105,4 +105,62 @@ class PokemonServiceImplTest {
 
         verify(pokemonPort, never()).deleteById(any());
     }
+
+    @Test
+    @DisplayName("delete: debe eliminar el Pokemon cuando existe")
+    void delete_whenExists_deletesSuccessfully() {
+        when(pokemonPort.findById(1L)).thenReturn(Optional.of(pikachu));
+
+        service.delete(1L);
+
+        verify(pokemonPort).deleteById(1L);
+    }
+
+    @Test
+    @DisplayName("update: debe actualizar y retornar el Pokemon cuando existe")
+    void update_whenExists_returnsUpdated() {
+        Pokemon updated = pikachu.toBuilder().name("Raichu").build();
+        when(pokemonPort.findById(1L)).thenReturn(Optional.of(pikachu));
+        when(pokemonPort.save(any())).thenReturn(updated);
+
+        Pokemon result = service.update(1L, pikachu);
+
+        assertThat(result.getName()).isEqualTo("Raichu");
+        verify(pokemonPort).save(any());
+    }
+
+    @Test
+    @DisplayName("update: debe lanzar ResourceNotFoundException si no existe")
+    void update_whenNotFound_throws() {
+        when(pokemonPort.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> service.update(99L, pikachu));
+
+        verify(pokemonPort, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("findAll: debe retornar página de pokemons")
+    void findAll_returnsPage() {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(0, 10);
+        org.springframework.data.domain.Page<Pokemon> page = new org.springframework.data.domain.PageImpl<>(List.of(pikachu));
+        when(pokemonPort.findAll(pageable)).thenReturn(page);
+
+        org.springframework.data.domain.Page<Pokemon> result = service.findAll(pageable);
+
+        assertThat(result.getContent()).hasSize(1);
+        verify(pokemonPort).findAll(pageable);
+    }
+
+    @Test
+    @DisplayName("filterByCriteria: debe retornar lista filtrada")
+    void filterByCriteria_returnsList() {
+        com.pokedex.core.model.PokemonFilterCriteria criteria = com.pokedex.core.model.PokemonFilterCriteria.builder().build();
+        when(pokemonPort.findByCriteria(criteria)).thenReturn(List.of(pikachu));
+
+        List<Pokemon> result = service.filterByCriteria(criteria);
+
+        assertThat(result).hasSize(1);
+        verify(pokemonPort).findByCriteria(criteria);
+    }
 }

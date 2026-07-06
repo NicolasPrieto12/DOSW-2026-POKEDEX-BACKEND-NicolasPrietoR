@@ -115,4 +115,45 @@ class PokemonControllerTest {
                         .content(objectMapper.writeValueAsString(invalid)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void create_withValidBody_returns201() throws Exception {
+        PokemonRequest request = new PokemonRequest(25, "Pikachu", "url", "desc", List.of("ELECTRIC"), "KANTO", 1);
+        Pokemon pokemon = Pokemon.builder().id(1L).name("Pikachu").build();
+
+        when(mapper.toDomain(any())).thenReturn(pokemon);
+        when(pokemonService.create(any())).thenReturn(pokemon);
+        when(mapper.toResponse(any())).thenReturn(pikachuResponse());
+
+        mockMvc.perform(post("/v1/pokemon")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("Pikachu"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void update_returns200() throws Exception {
+        PokemonRequest request = new PokemonRequest(25, "Pikachu", "url", "desc", List.of("ELECTRIC"), "KANTO", 1);
+        Pokemon pokemon = Pokemon.builder().id(1L).name("Pikachu").build();
+
+        when(mapper.toDomain(any())).thenReturn(pokemon);
+        when(pokemonService.update(any(), any())).thenReturn(pokemon);
+        when(mapper.toResponse(any())).thenReturn(pikachuResponse());
+
+        mockMvc.perform(put("/v1/pokemon/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Pikachu"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void delete_returns204() throws Exception {
+        mockMvc.perform(delete("/v1/pokemon/1"))
+                .andExpect(status().isNoContent());
+    }
 }

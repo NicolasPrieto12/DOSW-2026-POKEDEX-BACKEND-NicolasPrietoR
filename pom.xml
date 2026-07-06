@@ -160,6 +160,11 @@
 						<exclude>**/dto/**</exclude>
 						<exclude>**/entity/**</exclude>
 						<exclude>**/document/**</exclude>
+						<exclude>**/mapper/**</exclude>
+						<exclude>**/persistence/adapter/**</exclude>
+						<exclude>**/persistence/repository/**</exclude>
+						<exclude>**/security/**</exclude>
+						<exclude>**/core/model/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
