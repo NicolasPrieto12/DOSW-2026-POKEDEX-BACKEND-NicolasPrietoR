@@ -4,6 +4,7 @@ import com.pokedex.controller.dto.response.ErrorResponse;
 import com.pokedex.core.exception.BusinessException;
 import com.pokedex.core.exception.DuplicateResourceException;
 import com.pokedex.core.exception.ResourceNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
@@ -49,6 +51,7 @@ public class GlobalExceptionHandler {
         if (path.contains("/v3/api-docs") || path.contains("/swagger-ui")) {
             throw new RuntimeException(ex);
         }
+        log.error("Error no controlado en {}: {}", path, ex.getMessage(), ex);
         ErrorResponse error = new ErrorResponse("INTERNAL_ERROR", "Error interno del servidor", null, LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
