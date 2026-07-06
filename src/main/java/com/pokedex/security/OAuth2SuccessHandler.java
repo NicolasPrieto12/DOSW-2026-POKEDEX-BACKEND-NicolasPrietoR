@@ -44,6 +44,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         log.info("OAuth2 login exitoso para: {}", email);
 
         getRedirectStrategy().sendRedirect(request, response,
-                "http://localhost:4200/auth/callback?token=" + token);
+                "/swagger-ui.html?token=" + token);
     }
 }
