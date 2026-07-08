@@ -4,9 +4,9 @@ spring:
     name: nikodev
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/pokedex_db
-    username: postgres
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/pokedex_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -17,7 +17,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/pokedex_stats
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/pokedex_stats}
 
   flyway:
     enabled: true
@@ -33,7 +33,7 @@ spring:
             scope: email, profile
 
 server:
-  port: 8080
+  port: ${PORT:8080}
   servlet:
     context-path: /api
 
