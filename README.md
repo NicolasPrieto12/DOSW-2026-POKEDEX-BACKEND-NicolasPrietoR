@@ -13,6 +13,100 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 ---
 
+## Estructura del Proyecto
+
+```
+src/main/java/com/pokedex/
+├── api/
+│   └── PokedexApiApplication.java          # Clase principal Spring Boot
+├── config/
+│   ├── JpaConfig.java                       # Configuración JPA
+│   ├── OpenApiConfig.java                   # Configuración Swagger/OpenAPI
+│   └── SecurityConfig.java                  # Configuración Spring Security
+├── controller/
+│   ├── api/                                 # Interfaces de los endpoints (contratos)
+│   │   ├── AuthApi.java
+│   │   ├── PokemonApi.java
+│   │   └── UserApi.java
+│   ├── dto/
+│   │   ├── request/                         # DTOs de entrada
+│   │   │   ├── LoginRequest.java
+│   │   │   ├── PokemonRequest.java
+│   │   │   ├── TeamRequest.java
+│   │   │   └── UserUpdateRequest.java
+│   │   └── response/                        # DTOs de salida
+│   │       ├── ErrorResponse.java
+│   │       ├── PokemonResponse.java
+│   │       ├── PokemonStatsResponse.java
+│   │       ├── TeamResponse.java
+│   │       ├── TokenResponse.java
+│   │       └── UserResponse.java
+│   ├── handler/
+│   │   └── GlobalExceptionHandler.java      # Manejo global de excepciones
+│   ├── impl/                                # Implementaciones de los controladores
+│   │   ├── AuthController.java
+│   │   ├── PokemonController.java
+│   │   └── UserController.java
+│   └── mapper/                              # Mappers DTO ↔ Dominio
+│       ├── PokemonDtoMapper.java
+│       └── UserDtoMapper.java
+├── core/                                    # Lógica de negocio (independiente de frameworks)
+│   ├── exception/
+│   │   ├── BusinessException.java
+│   │   ├── DuplicateResourceException.java
+│   │   └── ResourceNotFoundException.java
+│   ├── model/                               # Modelos de dominio
+│   │   ├── Pokemon.java
+│   │   ├── PokemonFilterCriteria.java
+│   │   ├── PokemonStats.java
+│   │   ├── Team.java
+│   │   └── User.java
+│   └── service/
+│       ├── impl/                            # Implementaciones de servicios
+│       │   ├── PokemonServiceImpl.java
+│       │   └── UserServiceImpl.java
+│       └── interfaces/                      # Puertos (contratos de servicios y persistencia)
+│           ├── PokemonPersistencePort.java
+│           ├── PokemonService.java
+│           ├── TeamService.java
+│           ├── UserPersistencePort.java
+│           └── UserService.java
+├── persistence/                             # Capa de persistencia
+│   ├── adapter/                             # Adaptadores que implementan los puertos
+│   │   ├── PokemonPersistenceAdapter.java
+│   │   └── UserPersistenceAdapter.java
+│   ├── entity/
+│   │   ├── document/                        # Documentos MongoDB
+│   │   │   ├── PokemonViewDocument.java
+│   │   │   └── TeamStatsDocument.java
+│   │   └── relational/                      # Entidades JPA (PostgreSQL)
+│   │       ├── FavoriteEntity.java
+│   │       ├── PokemonEntity.java
+│   │       ├── PokemonStatEntity.java
+│   │       ├── RegionEntity.java
+│   │       ├── TeamEntity.java
+│   │       ├── TypeEntity.java
+│   │       └── UserEntity.java
+│   ├── mapper/                              # Mappers Entidad ↔ Dominio
+│   │   ├── PokemonPersistenceMapper.java
+│   │   └── UserPersistenceMapper.java
+│   └── repository/
+│       ├── document/                        # Repositorios MongoDB
+│       │   └── PokemonViewMongoRepository.java
+│       └── relational/                      # Repositorios JPA
+│           ├── PokemonJpaRepository.java
+│           ├── RegionJpaRepository.java
+│           ├── TypeJpaRepository.java
+│           └── UserJpaRepository.java
+└── security/
+    ├── JwtAuthFilter.java                   # Filtro de autenticación JWT
+    ├── JwtService.java                      # Generación y validación de tokens
+    ├── OAuth2SuccessHandler.java            # Handler de éxito OAuth2 Google
+    └── UserDetailsServiceImpl.java          # Implementación UserDetailsService
+```
+
+---
+
 ## Funcionalidades
 
 - Registro e inicio de sesión con Gmail
