@@ -1151,11 +1151,68 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 
 **Total: 30 pruebas — 29 pasan ✅ · 0 fallos · 0 skipped**
 
-| Clase | Pruebas | Descripción |
-|---|---|---|
-| `PokemonControllerTest` | 7 | Endpoints REST: crear, listar, buscar por ID, actualizar, eliminar y validación de body inválido |
-| `PokemonServiceImplTest` | 10 | Lógica de negocio: CRUD completo, duplicados, filtros y excepciones |
-| `UserServiceImplTest` | 12 | Gestión de usuarios: CRUD, toggle activo, buscar por email y creación automática OAuth2 |
-| `PokedexApiApplicationTests` | 1 | Carga del contexto de Spring Boot |
-
 Las pruebas se ejecutan automáticamente en cada push a `main` mediante GitHub Actions con reporte de cobertura JaCoCo.
+
+---
+
+### PokemonControllerTest — 7 pruebas ✅
+
+Pruebas de integración sobre los endpoints REST de Pokémon usando MockMvc.
+
+| # | Prueba | Descripción |
+|---|---|---|
+| 1 | `findById_returns200` | GET /v1/pokemon/{id} retorna 200 y los datos del Pokémon |
+| 2 | `findById_whenNotFound_returns404` | GET /v1/pokemon/{id} retorna 404 cuando no existe |
+| 3 | `findAll_returns200` | GET /v1/pokemon retorna 200 con la lista paginada |
+| 4 | `create_withValidBody_returns201` | POST /v1/pokemon retorna 201 con body válido (rol ADMIN) |
+| 5 | `create_withInvalidBody_returns400` | POST /v1/pokemon retorna 400 con body inválido |
+| 6 | `update_returns200` | PUT /v1/pokemon/{id} retorna 200 con datos actualizados |
+| 7 | `delete_returns204` | DELETE /v1/pokemon/{id} retorna 204 sin contenido |
+
+---
+
+### PokemonServiceImplTest — 10 pruebas ✅
+
+Pruebas unitarias sobre la lógica de negocio del servicio de Pokémon con Mockito.
+
+| # | Prueba | Descripción |
+|---|---|---|
+| 1 | `findById_whenExists_returnsP` | Retorna el Pokémon cuando existe en la base de datos |
+| 2 | `findById_whenNotFound_throws` | Lanza `ResourceNotFoundException` cuando no existe |
+| 3 | `create_whenNew_returnsSaved` | Guarda y retorna el Pokémon cuando no hay duplicado |
+| 4 | `create_whenDuplicate_throws` | Lanza `DuplicateResourceException` si el número nacional ya existe |
+| 5 | `update_whenExists_returnsUpdated` | Actualiza y retorna el Pokémon cuando existe |
+| 6 | `update_whenNotFound_throws` | Lanza `ResourceNotFoundException` al actualizar uno inexistente |
+| 7 | `delete_whenExists_deletesSuccessfully` | Elimina el Pokémon cuando existe |
+| 8 | `delete_whenNotFound_throws` | Lanza `ResourceNotFoundException` al eliminar uno inexistente |
+| 9 | `findAll_returnsPage` | Retorna página de Pokémon correctamente |
+| 10 | `filterByCriteria_returnsList` | Retorna lista filtrada según criterios de búsqueda |
+
+---
+
+### UserServiceImplTest — 12 pruebas ✅
+
+Pruebas unitarias sobre la lógica de negocio del servicio de usuarios con Mockito.
+
+| # | Prueba | Descripción |
+|---|---|---|
+| 1 | `findById_whenExists_returnsUser` | Retorna el usuario cuando existe |
+| 2 | `findById_whenNotFound_throws` | Lanza `ResourceNotFoundException` cuando no existe |
+| 3 | `findByEmail_whenExists_returnsUser` | Retorna el usuario por email cuando existe |
+| 4 | `findByEmail_whenNotFound_throws` | Lanza `ResourceNotFoundException` cuando el email no existe |
+| 5 | `findOrCreateByEmail_whenExists_returnsExisting` | Retorna el usuario existente sin crear uno nuevo |
+| 6 | `findOrCreateByEmail_whenNotExists_createsNew` | Crea y guarda un nuevo usuario si no existe (flujo OAuth2) |
+| 7 | `update_whenExists_returnsUpdated` | Actualiza el usuario cuando existe |
+| 8 | `update_whenNotFound_throws` | Lanza `ResourceNotFoundException` al actualizar uno inexistente |
+| 9 | `delete_whenExists_deletes` | Elimina el usuario cuando existe |
+| 10 | `delete_whenNotFound_throws` | Lanza `ResourceNotFoundException` al eliminar uno inexistente |
+| 11 | `toggleActive_whenExists_toggles` | Cambia el estado activo/inactivo del usuario |
+| 12 | `findAll_returnsPage` | Retorna página de usuarios correctamente |
+
+---
+
+### PokedexApiApplicationTests — 1 prueba ✅
+
+| # | Prueba | Descripción |
+|---|---|---|
+| 1 | `contextLoads` | Verifica que el contexto de Spring Boot carga correctamente |
