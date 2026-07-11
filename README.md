@@ -1144,3 +1144,18 @@ Aplicación web tipo Pokédex inspirada en la franquicia Pokémon. Permite a los
 <p align="center">
   <img src="Images/Diagrama entidad relacion.png" alt="Diagrama Entidad Relación NikoDex" width="900"/>
 </p>
+
+---
+
+## Pruebas Funcionales
+
+**Total: 30 pruebas — 29 pasan ✅ · 0 fallos · 0 skipped**
+
+| Clase | Pruebas | Descripción |
+|---|---|---|
+| `PokemonControllerTest` | 7 | Endpoints REST: crear, listar, buscar por ID, actualizar, eliminar y validación de body inválido |
+| `PokemonServiceImplTest` | 10 | Lógica de negocio: CRUD completo, duplicados, filtros y excepciones |
+| `UserServiceImplTest` | 12 | Gestión de usuarios: CRUD, toggle activo, buscar por email y creación automática OAuth2 |
+| `PokedexApiApplicationTests` | 1 | Carga del contexto de Spring Boot |
+
+Las pruebas se ejecutan automáticamente en cada push a `main` mediante GitHub Actions con reporte de cobertura JaCoCo.
